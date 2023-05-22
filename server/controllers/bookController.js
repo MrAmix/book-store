@@ -13,7 +13,7 @@ class bookController {
     add.count = req.body.count;
     add.preview = req.body.preview;
     await knex("books").insert(add);
-    res.json(123);
+    res.json(1);
   }
 }
 module.exports = new bookController();

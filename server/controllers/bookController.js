@@ -6,10 +6,12 @@ class bookController {
   async getOne(req, res) {}
 
   async create(req, res) {
+    //validation joi https://github.com/hapijs/joi
     let add = {};
     add.name = req.body.name;
     add.description = req.body.description;
     add.count = req.body.count;
+    add.preview = req.body.preview;
     await knex("books").insert(add);
     res.json(123);
   }

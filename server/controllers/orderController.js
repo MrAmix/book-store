@@ -5,8 +5,8 @@ class OrderController {
     add.book_id = req.body.book_id;
     add.user_id = req.body.user_id;
     console.log(req.body);
-    const users = await knex("orders").insert(add);
-    console.log(users);
+    const order = await knex("orders").insert(add);
+    console.log(order);
     res.json(1);
   }
 }

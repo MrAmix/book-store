@@ -1,16 +1,18 @@
 const router = require(`express`).Router();
 const bookController = require("../controllers/bookController");
 const orderController = require("../controllers/orderController");
-const userController = require("../controllers/userController");
+const UserController = require("../controllers/userController");
 
-router.get(`/:id/baskets`, userController.baskets);
-router.get(`/:id/books`, bookController.book);
+router.post(`/:id/baskets`, UserController.createBasket);
 
-router.post(`/login`, userController.login);
+//router.delete(`/:id/delete`, bookController.delete);
+//router.put(`/:id/update`, bookController.update);
 
-router.post(`/registration`, userController.registration);
-router.get(`/:id/orders`, orderController.order);
-router.get(`/auth`, userController.check);
+router.post(`/login`, UserController.login);
+
+router.post(`/registration`, UserController.registration);
+router.get(`/:id/orders`, UserController.getOrders);
+router.get(`/auth`, UserController.check);
 router.get(`/:id`);
 
 module.exports = router;

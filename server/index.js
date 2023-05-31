@@ -6,7 +6,6 @@ const ordersRouter = require(`./routers/ordersRouter`);
 const booksRouter = require(`./routers/booksRouter`);
 const PORT = process.env.POST || 5000;
 const errorHandler = require("./middleware/ErrorHaddingMiddleware");
-//const UsersService = require(`./service/UsersService`);
 
 const app = express();
 app.use(cors());

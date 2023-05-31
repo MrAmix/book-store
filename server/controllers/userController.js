@@ -1,21 +1,26 @@
 //const knex = require("../db");
 const ApiError = require("../error/ApiError");
-const AuthService = require("../service/AuthService");
+const authService = require("../service/AuthService");
 const userRegistrationDto = require("../dtos/UserRegistrationDto");
 const userLoginDto = require("../dtos/UserLoginDto");
 
 class UserController {
   async registration(req, res) {
-    const newUser = AuthService.registration(
+    const newUser = authService.registration(
       new userRegistrationDto(req.body.login, req.body.password, req.body.name)
     );
     res.json(newUser);
   }
   //ПРОВЕРИТЬ
-  async login(req, res) {
-    const user = userService.registration(
+  async login(req, res, next) {
+    const user = await authService.login(
       new userLoginDto(req.body.login, req.body.password)
     );
+
+    if (!user) {
+      next(ApiError.notFound("wrong login or password"), req, res);
+    }
+
     res.json(user);
   } // логин и пароль
 

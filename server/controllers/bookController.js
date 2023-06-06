@@ -43,7 +43,9 @@ class bookController {
         req.body.description,
         req.body.count,
         req.body.preview,
-        req.body.name
+        req.body.name,
+        req.body.currency,
+        req.body.price
       )
     );
     res.json(newBook);

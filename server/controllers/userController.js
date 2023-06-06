@@ -1,27 +1,53 @@
-//const knex = require("../db");
+require(`dotenv`).config();
 const ApiError = require("../error/ApiError");
 const authService = require("../service/AuthService");
 const userRegistrationDto = require("../dtos/UserRegistrationDto");
 const userLoginDto = require("../dtos/UserLoginDto");
-
+const AlradyExistsError = require("../error/AlreadyExistsError");
+const Crypto = require("../utils/Crypto");
+const Jwt = require("../utils/Jwt");
 class UserController {
-  async registration(req, res) {
-    const newUser = authService.registration(
-      new userRegistrationDto(req.body.login, req.body.password, req.body.name)
-    );
-    res.json(newUser);
+  async registration(req, res, next) {
+    try {
+      const { login, password, name } = req.body;
+      const encryptedPassword = Crypto.encrypt(
+        password,
+        process.env.AUTH_SALT,
+        process.env.AUTH_ITERATIONS
+      );
+
+      const newUser = await authService.registration(
+        new userRegistrationDto(login, encryptedPassword, name)
+      );
+
+      return res.json(
+        Jwt.create(newUser.id, login, newUser.is_admin ? "ADMIN" : "USER")
+      );
+    } catch (error) {
+      if (error instanceof AlradyExistsError) {
+        next(ApiError.conflict(error.message), req, res);
+      }
+    }
   }
   //ПРОВЕРИТЬ
   async login(req, res, next) {
+    const { login, password } = req.body;
+    const encryptedPassword = Crypto.encrypt(
+      password,
+      process.env.AUTH_SALT,
+      process.env.AUTH_ITERATIONS
+    );
     const user = await authService.login(
-      new userLoginDto(req.body.login, req.body.password)
+      new userLoginDto(login, encryptedPassword)
     );
 
     if (!user) {
       next(ApiError.notFound("wrong login or password"), req, res);
     }
 
-    res.json(user);
+    return res.json(
+      Jwt.create(user.id, login, user.is_admin ? "ADMIN" : "USER")
+    );
   } // логин и пароль
 
   async createBasket(req, res) {}

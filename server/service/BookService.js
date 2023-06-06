@@ -1,5 +1,6 @@
 const knex = require("../db");
-//const { all } = require("../routers/usersRouter");
+const Book = require("../entities/Book");
+const Price = require("../entities/Price");
 
 class bookService {
   async getAll() {
@@ -36,13 +37,29 @@ class bookService {
   }
 
   async create(bookCreateDto) {
-    let create = {};
-    create.description = bookCreateDto.description;
-    create.count = bookCreateDto.count;
-    create.preview = bookCreateDto.preview;
-    create.name = bookCreateDto.name;
-    const newBook = await knex("books").insert(create);
-    return newBook;
+    await knex.transaction(async (trx) => {
+      let book = {};
+      book.description = bookCreateDto.description;
+      book.count = bookCreateDto.count;
+      book.preview = bookCreateDto.preview;
+      book.name = bookCreateDto.name;
+      const newBook = await trx("books").insert(book);
+
+      let price = {};
+      price.price = bookCreateDto.price;
+      price.currency = bookCreateDto.currency;
+      price.book_id = newBook.id;
+      const newPrice = await trx("prices").insert(price);
+
+      return new Book(
+        newBook.id,
+        newBook.name,
+        newBook.description,
+        newBook.count,
+        newBook.preview,
+        new Price(newPrice.price, newPrice.currency)
+      );
+    });
   }
 }
 

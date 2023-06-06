@@ -16,5 +16,11 @@ class ApiError {
   static notFound(message) {
     return new ApiError(404, message);
   }
+  static conflict(message) {
+    return new ApiError(409, message);
+  }
+  static unauthorized(message) {
+    return new ApiError(401, message);
+  }
 }
 module.exports = ApiError;

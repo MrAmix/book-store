@@ -11,7 +11,8 @@ export default function Login() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
-      email: data.get("email"),
+      Name: data.get("name"),
+      Login: data.get("login"),
       password: data.get("password"),
     });
   };

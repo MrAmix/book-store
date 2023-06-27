@@ -5,7 +5,6 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
 import Badge from "@mui/material/Badge";
 import MenuItem from "@mui/material/MenuItem";
@@ -14,6 +13,15 @@ import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import MoreIcon from "@mui/icons-material/MoreVert";
 import Link from '@mui/material/Link';
+import List from '@mui/material/List';
+
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+
+
 
 
 const Search = styled("div")(({ theme }) => ({
@@ -125,7 +133,7 @@ export default function BooksNavbar() {
           aria-label="show 17 new books"
           color="inherit"
         >
-          <Badge badgeContent={17} color="error">
+          <Badge badgeContent={17} color="error" >
             <ShoppingCartIcon />
           </Badge>
         </IconButton>
@@ -144,16 +152,25 @@ export default function BooksNavbar() {
   const test = 10;
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      
+      <AppBar position="relative" sx={{zIndex: (theme) => theme.zIndex.drawer + 1}}>
         <Toolbar>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ display: { xs: "none", sm: "block" } }}
-          >
-            Книжка для братишки
-          </Typography>
+        <List sx={{display: "flex", alignItems: "center",flexDirection:"column"}}
+              href="/user/:id/personal" color="inherit"
+            >
+              {[{title:"Книжка для братишки",link:"/books",icon:AutoStoriesIcon}].map((el) => (
+
+              <ListItem key={el.title} disablePadding>
+                <ListItemButton component="a" href={el.link}>
+
+                  <ListItemIcon>
+                    { <el.icon /> }
+                  </ListItemIcon>
+                  <ListItemText primary={el.title} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+            </List>
           
           <Search>
             <SearchIconWrapper>

@@ -11,6 +11,13 @@ import Books from '../../pages/books'
 import Book from '../../pages/book'
 import ErrorPage from '../../pages/ErrorPage'
 import Login from '../../pages/login'
+import User from '../../pages/user'
+import Personal from '../../pages/personal'
+import Orders from '../../pages/orders'
+import Reviews from '../../pages/reviews'
+import Basket from '../../pages/basket'
+
+
 
 const Router = () => {
     const router = createBrowserRouter(
@@ -21,6 +28,12 @@ const Router = () => {
             <Route path='login' element={<Login />} />
             <Route path='books' element={<Books />} />
             <Route path='books/:id' element={<Book />} />
+            <Route path='user/:id' element={<User />} />
+            <Route path='/user/:id/personal' element={<Personal />} />
+            <Route path='/user/:id/orders' element={<Orders />} />
+            <Route path='/user/:id/reviews' element={<Reviews />} />
+            <Route path='/user/:id/basket' element={<Basket />} />
+
             <Route path='*' element={<ErrorPage />}></Route>
         </>
       )

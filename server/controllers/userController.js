@@ -29,7 +29,6 @@ class UserController {
       }
     }
   }
-  //ПРОВЕРИТЬ
   async login(req, res, next) {
     const { login, password } = req.body;
     const encryptedPassword = Crypto.encrypt(
@@ -51,6 +50,8 @@ class UserController {
   } // логин и пароль
 
   async createBasket(req, res) {}
+
+  async createReview(req, res) {}
 
   //POST /api/users/:user_id/orders
   async createOrder(req, res) {

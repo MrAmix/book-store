@@ -13,10 +13,10 @@ export default function Login() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const schema = Joi.object({
-      login: Joi.string().alphanum().min(3).max(30).required(),
+      login: Joi.string().alphanum().min(3).max(30).required("Заполните поле"),
       password: Joi.string()
         .pattern(new RegExp("^[a-zA-Z0-9]{3,30}$"))
-        .required(),
+        .required("Заполните поле"),
     });
 
     console.log(errorA);
@@ -58,7 +58,7 @@ export default function Login() {
             required
             fullWidth
             id="email"
-            error={errorA}
+            error={!!errorA.login}
             helperText="Incorrect entry."
             label="Login"
             name="login"

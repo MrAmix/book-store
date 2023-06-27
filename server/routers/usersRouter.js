@@ -5,9 +5,6 @@ const userRegistrationMiddleware = require("../middleware/UserRegistrationMiddle
 
 router.post(`/:id/baskets`, UserController.createBasket);
 
-//router.delete(`/:id/delete`, bookController.delete);
-//router.put(`/:id/update`, bookController.update);
-
 router.post(`/login`, userLoginMiddleware, UserController.login);
 
 router.post(
@@ -16,6 +13,7 @@ router.post(
   UserController.registration
 );
 router.get(`/:id/orders`, UserController.getOrders);
+
 router.get(`/auth`, UserController.check);
 router.get(`/:id`);
 

@@ -17,22 +17,21 @@ const images = [
   {
     label: "San Francisco – Oakland Bay Bridge, United States",
     imgPath:
-      "https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60",
+      "https://www.onlinelegaladvise.com/public/frontend/images/signupnow2.png",
   },
   {
     label: "Bird",
     imgPath:
-      "https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60",
+      "https://konspekta.net/lektsiiorgimg/baza16/212208432749.files/image001.jpg",
   },
   {
     label: "Bali, Indonesia",
-    imgPath:
-      "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250",
+    imgPath: "https://abwllc.files.wordpress.com/2017/10/4.jpg?w=1200",
   },
   {
     // label: 'Goč, Serbia',
     imgPath:
-      "https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60",
+      "https://kachestvo.pro/upload/resize_cache/iblock/353/1920_400_240cd750bba9870f18aada2478b24840a/35303b038c0c405980bdfc48ec5e61b1.jpg",
   },
 ];
 
@@ -70,7 +69,7 @@ function SwipeableTextMobileStepper() {
                   sx={{
                     height: 320,
                     display: "block",
-                    maxWidth: 950,
+                    maxWidth: 900,
                     overflow: "hidden",
                     width: "100%",
                   }}

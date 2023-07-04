@@ -4,14 +4,32 @@ const Price = require("../entities/Price");
 
 class bookService {
   async getAll() {
-    return knex("books").select();
+    return knex("books").select().orderBy("id", "asc");
   }
 
   async getOne(bookGetOneDto) {
-    let one = {};
-    one.book_id = bookGetOneDto.book_id;
-    const GetOneBook = await knex("books").insert(one);
-    return GetOneBook;
+    const book = await knex("books")
+      .join("prices", "prices.book_id", "=", "books.id")
+      .where("books.id", bookGetOneDto.book_id)
+      .first(
+        "books.id as book_id",
+        "books.name as book_name",
+        "books.description as book_description",
+        "books.preview as book_preview",
+        "books.count as book_count",
+        "books.created_at as book_created_at",
+        "books.updated_at as book_updated_at",
+        "prices.price as book_price",
+        "prices.currency as book_price_currency"
+      );
+    return new Book(
+      book.book_id,
+      book.book_name,
+      book.book_description,
+      book.book_count,
+      book.book_preview,
+      new Price(book.book_price, book.book_price_currency)
+    );
   }
 
   async delete(bookDeleteDto) {

@@ -13,7 +13,10 @@ class bookController {
   }
 
   async getOne(req, res) {
-    const getOneBook = bookService.getOne(new bookGetOneDto(req.body.book_id));
+    console.log(req.params);
+    const getOneBook = await bookService.getOne(
+      new bookGetOneDto(req.params.id)
+    );
     res.json(getOneBook);
   }
 

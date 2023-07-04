@@ -4,10 +4,10 @@ const createBookMiddleware = require("../middleware/CreateBookMiddleware");
 const authMiddleware = require("../middleware/AuthMiddleware");
 const isAdminMiddleware = require("../middleware/IsAdminMiddleware");
 
+router.get(`/`, bookController.getAll);
+router.get(`/:id`, bookController.getOne);
 router.delete(`/:id`, bookController.delete);
 router.put(`/:id`, bookController.update);
-router.get(`/`, isAdminMiddleware(), bookController.getAll);
 router.post(`/`, createBookMiddleware, bookController.create);
-router.get(`/:id`, bookController.getOne);
 
 module.exports = router;

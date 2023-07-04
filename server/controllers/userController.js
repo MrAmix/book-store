@@ -30,23 +30,33 @@ class UserController {
     }
   }
   async login(req, res, next) {
-    const { login, password } = req.body;
-    const encryptedPassword = Crypto.encrypt(
-      password,
-      process.env.AUTH_SALT,
-      process.env.AUTH_ITERATIONS
-    );
-    const user = await authService.login(
-      new userLoginDto(login, encryptedPassword)
-    );
+    try {
+      const { login, password } = req.body;
+      const encryptedPassword = Crypto.encrypt(
+        password,
+        process.env.AUTH_SALT,
+        process.env.AUTH_ITERATIONS
+      );
+      console.log(encryptedPassword);
+      const user = await authService.login(
+        new userLoginDto(login, encryptedPassword)
+      );
 
-    if (!user) {
-      next(ApiError.notFound("wrong login or password"), req, res);
+      console.log(user);
+
+      if (!user) {
+        next(ApiError.notFound("wrong login or password"), req, res);
+        return;
+      }
+
+      // console.log(user);
+
+      return res.json(
+        Jwt.create(user.id, login, user.is_admin ? "ADMIN" : "USER")
+      );
+    } catch (error) {
+      console.log(error);
     }
-
-    return res.json(
-      Jwt.create(user.id, login, user.is_admin ? "ADMIN" : "USER")
-    );
   } // логин и пароль
 
   async createBasket(req, res) {}

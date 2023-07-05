@@ -5,7 +5,6 @@ const bookDeleteDto = require("../dtos/BookDeleteDto");
 const bookGetOneDto = require("../dtos/BookGetOneDto");
 const bookService = require("../service/BookService");
 
-//ПРОВЕРИТЬ
 class bookController {
   async getAll(req, res) {
     const books = await bookService.getAll();
@@ -41,14 +40,15 @@ class bookController {
   }
 
   async create(req, res) {
+    console.log(req.body);
     const newBook = bookService.create(
       new bookCreateDto(
         req.body.description,
         req.body.count,
-        req.body.preview,
+        req.file.filename,
         req.body.name,
         req.body.currency,
-        req.body.price
+        req.body.price,
       )
     );
     res.json(newBook);

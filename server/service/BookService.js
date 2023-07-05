@@ -8,6 +8,7 @@ class bookService {
   }
 
   async getOne(bookGetOneDto) {
+    console.log(bookGetOneDto);
     const book = await knex("books")
       .join("prices", "prices.book_id", "=", "books.id")
       .where("books.id", bookGetOneDto.book_id)
@@ -22,6 +23,7 @@ class bookService {
         "prices.price as book_price",
         "prices.currency as book_price_currency"
       );
+    console.log(book);
     return new Book(
       book.book_id,
       book.book_name,
@@ -55,19 +57,20 @@ class bookService {
   }
 
   async create(bookCreateDto) {
+    console.log(bookCreateDto);
     await knex.transaction(async (trx) => {
       let book = {};
       book.description = bookCreateDto.description;
       book.count = bookCreateDto.count;
       book.preview = bookCreateDto.preview;
       book.name = bookCreateDto.name;
-      const newBook = await trx("books").insert(book);
+      const newBook = (await trx("books").insert(book).returning("*"))[0];
 
       let price = {};
       price.price = bookCreateDto.price;
       price.currency = bookCreateDto.currency;
       price.book_id = newBook.id;
-      const newPrice = await trx("prices").insert(price);
+      const newPrice = (await trx("prices").insert(price).returning("*"))[0];
 
       return new Book(
         newBook.id,

@@ -1,15 +1,24 @@
 import "./App.css";
-import React from "react";
+import React, { useEffect } from "react";
 import Router from "./components/Router/Router";
 import Store from "./store/index";
 import { observer } from "mobx-react-lite";
 
-const globalStore = new Store();
+export const globalStore = new Store();
+export const AuthContext = React.createContext({ globalStore });
 function App() {
-  console.log(globalStore);
+  useEffect(() => {
+    console.log(globalStore);
+
+    setInterval(() => {
+      console.log(globalStore.isAuth);
+    }, 2000);
+  }, []);
   return (
     <div>
-      <Router />
+      <AuthContext.Provider value={{ globalStore }}>
+        <Router />
+      </AuthContext.Provider>
     </div>
   );
 }

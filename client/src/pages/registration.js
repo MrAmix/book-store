@@ -5,9 +5,38 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import { useForm } from "react-hook-form";
+import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../App";
 
 export default function Login() {
-  const handleSubmit = (event) => {
+  const { globalStore } = useContext(AuthContext);
+
+  const navigate = useNavigate();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = async (data) => {
+    const errorStatus = await globalStore.registration(
+      data.name,
+      data.login,
+      data.password
+    );
+    if (!errorStatus.status) {
+      return;
+    }
+    navigate("/login");
+    // if (!errorStatus.status) {
+    //   return;
+    // }
+    //navigate("/books");
+  };
+
+  const handleSubmit1 = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
@@ -17,6 +46,30 @@ export default function Login() {
     });
   };
 
+  const catchErrorName = (typeError) => {
+    if (typeError === "required") {
+      return "Поле не должно быть пустым";
+    }
+    if (typeError === "pattern") {
+      return "Имя не должно содержать цифру";
+    }
+  };
+  const catchErrorLogin = (typeError) => {
+    if (typeError === "required") {
+      return "Поле не должно быть пустым";
+    }
+  };
+  const catchErrorPassword = (typeError) => {
+    if (typeError === "required") {
+      return "Поле не должно быть пустым";
+    }
+    if (typeError === "maxLength") {
+      return "Пароль слишком длинный";
+    }
+    if (typeError === "minLength") {
+      return "Пароль слишком короткий";
+    }
+  };
   return (
     <Container component="main" maxWidth="sm">
       <Box
@@ -34,8 +87,20 @@ export default function Login() {
         <Typography component="h1" variant="h5">
           Авторизация
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box
+          component="form"
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+          sx={{ mt: 1 }}
+        >
           <TextField
+            {...register("name", {
+              required: true,
+              maxLength: 20,
+              pattern: /^[а-яА-Яa-zA-Z\s]+$/,
+            })}
+            error={errors?.name?.type ? true : false}
+            helperText={catchErrorName(errors?.name?.type)}
             margin="normal"
             required
             fullWidth
@@ -46,6 +111,9 @@ export default function Login() {
             autoFocus
           />
           <TextField
+            {...register("login", { required: true, maxLength: 80 })}
+            error={errors?.login?.type ? true : false}
+            helperText={catchErrorLogin(errors?.login?.type)}
             margin="normal"
             required
             fullWidth
@@ -56,6 +124,13 @@ export default function Login() {
             autoFocus
           />
           <TextField
+            {...register("password", {
+              required: true,
+              maxLength: 20,
+              minLength: 6,
+            })}
+            error={errors?.password?.type ? true : false}
+            helperText={catchErrorPassword(errors?.password?.type)}
             margin="normal"
             required
             fullWidth

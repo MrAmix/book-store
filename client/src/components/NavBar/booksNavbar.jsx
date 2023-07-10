@@ -14,13 +14,16 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import MoreIcon from "@mui/icons-material/MoreVert";
 import Link from '@mui/material/Link';
 import List from '@mui/material/List';
+import { Link as RouterLink } from "react-router-dom";
 
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
-
+import { AuthContext } from "../../App";
+import PersonIcon from '@mui/icons-material/Person';
+import Avatar from '@mui/material/Avatar';
 
 
 
@@ -66,6 +69,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function BooksNavbar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const { globalStore } = React.useContext(AuthContext);
+
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
@@ -140,28 +145,33 @@ export default function BooksNavbar() {
         <p>Notifications</p>
       </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
+      <RouterLink to="/user/:id/basket" color="inherit">
+
       <Link
-              href="/login" color="inherit"
+              //href="/user/:id/basket" color="inherit"
             >
               Button Link
             </Link>
+            </RouterLink>
       </MenuItem>
     </Menu>
   );
 
   const test = 10;
+  
   return (
     <Box sx={{ flexGrow: 1 }}>
       
       <AppBar position="relative" sx={{zIndex: (theme) => theme.zIndex.drawer + 1}}>
         <Toolbar>
-        <List sx={{display: "flex", alignItems: "center",flexDirection:"column"}}
-              href="/user/:id/personal" color="inherit"
-            >
-              {[{title:"Книжка для братишки",link:"/books",icon:AutoStoriesIcon}].map((el) => (
+      <RouterLink to="/books" color="inherit">
 
-              <ListItem key={el.title} disablePadding>
-                <ListItemButton component="a" href={el.link}>
+        <List sx={{display: "flex", alignItems: "center",flexDirection:"column"}}
+            >
+              {[{title:"Книжка для братишки",icon:AutoStoriesIcon}].map((el) => (
+
+              <ListItem key={el.title} disablePadding color="inherit">
+                <ListItemButton >
 
                   <ListItemIcon>
                     { <el.icon /> }
@@ -171,7 +181,7 @@ export default function BooksNavbar() {
               </ListItem>
             ))}
             </List>
-          
+            </RouterLink>
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -182,13 +192,19 @@ export default function BooksNavbar() {
             />
             
           </Search>
+          <RouterLink to={"/chat"} color="inherit">
+            
           <Link sx={{display: "flex", alignItems: "center"}}
-              href="/login" color="inherit"
+             color="inherit"
             >
+
               Онлайн чат
             </Link>
+            </RouterLink>
+
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex",  } }}>
+      <RouterLink to="/user/:id/basket" color="inherit">
             <IconButton
               size="large"
               aria-label="show count new books"
@@ -198,12 +214,22 @@ export default function BooksNavbar() {
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>
+            </RouterLink>
             
-            <Link sx={{display: "flex", alignItems: "center"}}
-              href="/login" color="inherit"
-            >
-              Войти
-            </Link>
+            {globalStore.isAuth ? (
+              <RouterLink to={"/user/:id"} color="inherit">
+              <Link sx={{display: "flex", alignItems: "center"}}  color="inherit">
+                <Avatar alt="Remy Sharp" src={`http://localhost:5000/images/${globalStore.user.avatar}`}>
+                  <PersonIcon/>
+                </Avatar>
+              </Link>
+              </RouterLink>
+              ) : (
+                <Link sx={{display: "flex", alignItems: "center"}} href="/login" color="inherit">
+                  Войти
+                </Link>
+              )
+            }
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
             <IconButton

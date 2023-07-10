@@ -6,34 +6,78 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Joi from "joi";
+import { observer } from "mobx-react-lite";
+import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../App";
+import { useForm } from "react-hook-form";
 
-export default function Login() {
-  let errorA = false;
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const schema = Joi.object({
-      login: Joi.string().alphanum().min(3).max(30).required("Заполните поле"),
-      password: Joi.string()
-        .pattern(new RegExp("^[a-zA-Z0-9]{3,30}$"))
-        .required("Заполните поле"),
-    });
+function Login() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = async (data) => {
+    const errorStatus = await globalStore.login(data.LoginName, data.password);
 
-    console.log(errorA);
-
-    const { error } = schema.validate(data, { abortEarly: false });
-
-    errorA = error;
-    if (error) {
-      errorA = true;
+    if (!errorStatus.status) {
+      return;
     }
+    navigate("/books");
 
-    console.log(errorA);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    // if (!globalStore.isAuth) {
+    //   return;
+    // }
+    console.log(errorStatus);
   };
+
+  const catchErrorLogin = (typeError) => {
+    if (typeError === "required") {
+      return "Поле не должно быть пустым";
+    }
+  };
+  const catchErrorPassword = (typeError) => {
+    if (typeError === "required") {
+      return "Поле не должно быть пустым";
+    }
+  };
+
+  // export default function App() {
+
+  //       return (
+  //   <form onSubmit={handleSubmit(onSubmit)}>
+  //       <input type="text" placeholder="First name" {...register("First name", {required: true, maxLength: 80})} />
+  //       <input type="text" placeholder="Last name" {...register("Last name", {required: true, maxLength: 100})} />
+  //       <input type="text" placeholder="Email" {...register("Email", {required: true, pattern: /^\S+@\S+$/i})} />
+  //       <input type="tel" placeholder="Mobile number" {...register("Mobile number", {required: true, minLength: 6, maxLength: 12})} />
+  //       <select {...register("Title", { required: true })}>
+  //         <option value="Mr">Mr</option>
+  //         <option value="Mrs">Mrs</option>
+  //         <option value="Miss">Miss</option>
+  //         <option value="Dr">Dr</option>
+  //       </select>
+
+  //       <input {...register("Developer", { required: true })} type="radio" value="Yes" />
+  //       <input {...register("Developer", { required: true })} type="radio" value="No" />
+
+  //       <input type="submit" />
+  //     </form>
+  //   );
+  // }
+
+  const navigate = useNavigate();
+  const { globalStore } = useContext(AuthContext);
+  const [login, setLogin] = useState("");
+  const changeLogin = (value) => {
+    setLogin(value);
+    console.log(value);
+  };
+  const [password, setPassword] = useState("");
+  const changePassword = (value) => {
+    setPassword(value);
+  };
+  let errorA = false;
 
   return (
     <Container component="main" maxWidth="sm">
@@ -52,20 +96,31 @@ export default function Login() {
         <Typography component="h1" variant="h5">
           Авторизация
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box
+          component="form"
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+          sx={{ mt: 1 }}
+        >
           <TextField
+            onChange={(event) => {
+              console.log(event);
+            }}
+            {...register("LoginName", { required: true, maxLength: 80 })}
             margin="normal"
             required
             fullWidth
-            id="email"
-            error={!!errorA.login}
-            helperText="Incorrect entry."
+            id="LoginName"
+            error={errors?.LoginName?.type ? true : false}
+            helperText={catchErrorLogin(errors?.LoginName?.type)}
             label="Login"
-            name="login"
-            autoComplete="login"
-            autoFocus
+            name="LoginName"
           />
+
           <TextField
+            {...register("password", { required: true, maxLength: 80 })}
+            error={errors?.password?.type ? true : false}
+            helperText={catchErrorPassword(errors?.password?.type)}
             margin="normal"
             required
             fullWidth
@@ -95,3 +150,5 @@ export default function Login() {
     </Container>
   );
 }
+
+export default observer(Login);

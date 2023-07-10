@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import { observer } from "mobx-react-lite";
 import {
     RouterProvider,
     Route,
@@ -16,10 +17,13 @@ import Personal from '../../pages/personal'
 import Orders from '../../pages/orders'
 import Reviews from '../../pages/reviews'
 import Basket from '../../pages/basket'
-
+import { AuthContext } from '../../App'
+import Chat from '../../pages/chat'
 
 
 const Router = () => {
+ const {globalStore} = useContext(AuthContext)
+ console.log(globalStore)
     const router = createBrowserRouter(
       createRoutesFromElements(
         <>
@@ -33,6 +37,7 @@ const Router = () => {
             <Route path='/user/:id/orders' element={<Orders />} />
             <Route path='/user/:id/reviews' element={<Reviews />} />
             <Route path='/user/:id/basket' element={<Basket />} />
+            <Route path='/chat' element={<Chat />} />
 
             <Route path='*' element={<ErrorPage />}></Route>
         </>
@@ -42,4 +47,4 @@ const Router = () => {
     return <RouterProvider router={router} />
   }
   
-  export default Router
+  export default observer(Router)

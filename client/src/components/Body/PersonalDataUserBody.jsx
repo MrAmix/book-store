@@ -8,6 +8,7 @@ import Avatar from 'react-avatar-edit';
 import Button from "@mui/material/Button";
 import Drawer from '@mui/material/Drawer';
 import Typography from '@mui/material/Typography';
+import { Link as RouterLink } from "react-router-dom";
 
 import Toolbar from '@mui/material/Toolbar';
 import Divider from '@mui/material/Divider';
@@ -19,6 +20,7 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
 import List from '@mui/material/List';
 import RateReviewIcon from '@mui/icons-material/RateReview';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 export default function MultiActionAreaCard() {
   const drawerWidth = 280;
@@ -39,18 +41,19 @@ export default function MultiActionAreaCard() {
         <Toolbar />
         <Box sx={{ overflow: 'auto' }}>
         <List sx={{display: "flex", alignItems: "center",flexDirection:"column"}}
-              href="/user/:id/personal" color="inherit"
             >
-              {[{title:"Редактировать профиль",link:"/user/:id/personal",icon:AccountBoxIcon},{title:"Мои заказы", link:"/user/:id/orders",icon:LocalMallIcon},{title:"Мои отзывы",link:"/user/:id/reviews",icon:RateReviewIcon}].map((el, index) => (
+              {[{title:"Редактировать профиль",link:"/user/:id/personal",icon:AccountBoxIcon},{title:"Мои заказы", link:"/user/:id/orders",icon:LocalMallIcon},{title:"Мои отзывы",link:"/user/:id/reviews",icon:RateReviewIcon},{title:"Корзина",link:"/user/:id/basket",icon:ShoppingCartIcon}].map((el, index) => (
 
               <ListItem key={el.title} disablePadding>
-                <ListItemButton component="a" href={el.link}>
+                <RouterLink to={el.link}>
+                <ListItemButton>
 
                   <ListItemIcon>
                     { <el.icon /> }
                   </ListItemIcon>
                   <ListItemText primary={el.title} />
                 </ListItemButton>
+                </RouterLink>
               </ListItem>
             ))}
             </List>

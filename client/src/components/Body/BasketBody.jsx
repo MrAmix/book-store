@@ -1,43 +1,30 @@
-import * as React from 'react';
+import React from 'react';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
 import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import ListItemText from '@mui/material/ListItemText';
-import Avatar from '@mui/material/Avatar';
-
+import TextField from '@mui/material/TextField';
+import Avatar from 'react-avatar-edit';
+import Button from "@mui/material/Button";
 import Drawer from '@mui/material/Drawer';
+import Typography from '@mui/material/Typography';
+import { Link as RouterLink } from "react-router-dom";
 
 import Toolbar from '@mui/material/Toolbar';
 import Divider from '@mui/material/Divider';
+import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
+import List from '@mui/material/List';
 import RateReviewIcon from '@mui/icons-material/RateReview';
 
-const drawerWidth = 280;
-
-
-function refreshMessages() {
-    
-  const getRandomInt = (max) => Math.floor(Math.random() * Math.floor(max));
-
-  return Array.from(new Array(3)).map(
-    () => messageExamples[getRandomInt(messageExamples.length)],
-  );
-}
-
-export default function FixedBottomNavigation() {
-  const [value] = React.useState(0);
-  const ref = React.useRef(null);
-  const [messages, setMessages] = React.useState(() => refreshMessages());
-
-  React.useEffect(() => {
-    ref.current.ownerDocument.body.scrollTop = 0;
-    setMessages(refreshMessages());
-  }, [value, setMessages]);
+export default function MultiActionAreaCard() {
+  const drawerWidth = 280;
+    const book = {name:"Андрей", preview:"https://images.chesscomfiles.com/uploads/v1/user/77559592.9cb711dc.160x160o.e195dd620cda@2x.jpeg",
+    }
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -53,18 +40,19 @@ export default function FixedBottomNavigation() {
         <Toolbar />
         <Box sx={{ overflow: 'auto' }}>
         <List sx={{display: "flex", alignItems: "center",flexDirection:"column"}}
-              href="/user/:id/personal" color="inherit"
             >
               {[{title:"Редактировать профиль",link:"/user/:id/personal",icon:AccountBoxIcon},{title:"Мои заказы", link:"/user/:id/orders",icon:LocalMallIcon},{title:"Мои отзывы",link:"/user/:id/reviews",icon:RateReviewIcon}].map((el, index) => (
 
               <ListItem key={el.title} disablePadding>
-                <ListItemButton component="a" href={el.link}>
+                <RouterLink to={el.link}>
+                <ListItemButton>
 
                   <ListItemIcon>
                     { <el.icon /> }
                   </ListItemIcon>
                   <ListItemText primary={el.title} />
                 </ListItemButton>
+                </RouterLink>
               </ListItem>
             ))}
             </List>
@@ -73,44 +61,96 @@ export default function FixedBottomNavigation() {
         </Box>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 1 }}>
-    
-    
-
-    <Box sx={{ pb: 7 }} ref={ref}>
-      <CssBaseline />
-      <List >
         
-        {messages.map(({ primary, secondary, person }, index) => (
-            <ListItem button key={index + person}>
-            <ListItemAvatar>
-              <Avatar alt="Profile Picture" src={person} />
-            </ListItemAvatar>
-            <ListItemText primary={primary} secondary={secondary} />
-          </ListItem>
-        ))}
-      </List>
-   
-    </Box>
-  </Box>
-  </Box>
-  );
-}
+  
+    <Card sx={{display:'flex'}}>
+      
 
-const messageExamples = [
-  {
-      primary: 'Brunch this week?',
-      secondary: "I'll be in the neighbourhood this week. Let's grab a bite to eat",
-    person: '/static/images/avatar/5.jpg',
-  },
-  {
-      primary: 'Birthday Gift',
-      secondary: `Do you have a suggestion for a good present for John on his work
-      anniversary. I am really confused & would love your thoughts on it.`,
-      person: '/static/images/avatar/1.jpg',
-    },
-  {
-      primary: 'Recipe to try',
-      secondary: 'I am try out this new BBQ recipe, I think this might be amazing',
-      person: '/static/images/avatar/2.jpg',
-    }
-]
+        <CardContent>
+
+
+    <Box component="form" noValidate >
+    <Typography gutterBottom variant="h5" align="center" component="div">
+            {book.name}
+          </Typography>
+      <Avatar>
+        <CardMedia
+          component="img"
+          sx={{
+            width: 160,
+            height: 160,
+            maxWidth: '100%',
+            maxHeight: '100%',
+          }}
+          
+          image= {book.preview}
+          alt="book"
+          
+          />
+        </Avatar>
+        <TextField
+          size='small'
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            helperText="Введите новый имя для изменения."
+            label="Имя"
+            name="name"
+            autoComplete="name"
+            autoFocus
+            />
+          <TextField
+          size='small'
+            margin="normal"
+            required
+            fullWidth
+            id="login"
+            helperText="Введите новый логин для изменения."
+            label="Логин"
+            name="login"
+            autoComplete="login"
+            autoFocus
+            />
+          <TextField
+          size='small'
+            margin="normal"
+            required
+            fullWidth
+            helperText="Введите старый пароль для изменения."
+            name="password"
+            label="Пароль"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            />
+            <TextField
+          size='small'
+            margin="normal"
+            required
+            fullWidth
+            helperText="Введите новый пароль для изменения."
+            name="password"
+            label="Пароль"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            />
+            <Button
+            color='success'
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            >
+            Подтвердить
+          </Button>
+          </Box>
+          </CardContent>
+    </Card>
+    
+    
+            </Box>
+          </Box>
+    );
+}

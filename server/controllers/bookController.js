@@ -12,7 +12,6 @@ class bookController {
   }
 
   async getOne(req, res) {
-    console.log(req.params);
     const getOneBook = await bookService.getOne(
       new bookGetOneDto(req.params.id)
     );
@@ -33,15 +32,16 @@ class bookController {
         req.body.description,
         req.body.count,
         req.body.preview,
-        req.body.name
+        req.body.name,
+        req.body.pageCount,
+        req.body.ageLimit
       )
     );
     res.json(updateBook);
   }
 
   async create(req, res) {
-    console.log(req.body);
-    const newBook = bookService.create(
+    const newBook = await bookService.create(
       new bookCreateDto(
         req.body.description,
         req.body.count,
@@ -49,8 +49,11 @@ class bookController {
         req.body.name,
         req.body.currency,
         req.body.price,
+        req.body.pageCount,
+        req.body.ageLimit
       )
     );
+
     res.json(newBook);
   }
 }

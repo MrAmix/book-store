@@ -1,8 +1,10 @@
 require(`dotenv`).config();
 const ApiError = require("../error/ApiError");
 const authService = require("../service/AuthService");
+const userService = require("../service/UserService");
 const userRegistrationDto = require("../dtos/UserRegistrationDto");
 const userLoginDto = require("../dtos/UserLoginDto");
+const userUpdateDto = require("../dtos/UserUpdateDto");
 const AlradyExistsError = require("../error/AlreadyExistsError");
 const Crypto = require("../utils/Crypto");
 const Jwt = require("../utils/Jwt");
@@ -51,9 +53,10 @@ class UserController {
 
       // console.log(user);
 
-      return res.json(
-        Jwt.create(user.id, login, user.is_admin ? "ADMIN" : "USER")
-      );
+      return res.json({
+        user: user,
+        jwt_token: Jwt.create(user.id, login, user.is_admin ? "ADMIN" : "USER"),
+      });
     } catch (error) {
       console.log(error);
     }
@@ -101,6 +104,23 @@ class UserController {
       new orderOneDto(req.params.order_id)
     );
     res.json(userOrder);
+  }
+  async update(req, res) {
+    const encryptedPassword = Crypto.encrypt(
+      req.body.password,
+      process.env.AUTH_SALT,
+      process.env.AUTH_ITERATIONS
+    );
+    const newUser = userService.update(
+      req.params.id,
+      new userUpdateDto(
+        req.body.name,
+        req.body.login,
+        encryptedPassword,
+        req.file.filename
+      )
+    );
+    res.json(newUser);
   }
 }
 module.exports = new UserController();

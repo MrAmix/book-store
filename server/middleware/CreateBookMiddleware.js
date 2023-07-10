@@ -15,6 +15,8 @@ module.exports = function (req, res, next) {
       ),
     price: Joi.number().min(10).max(100000).required(),
     currency: Joi.string().in(["RUB"]).required(),
+    description: Joi.string().alphanum().max(255),
+
   });
 
   const { error } = schema.validate(req.body, { abortEarly: false });

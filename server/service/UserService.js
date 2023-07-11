@@ -1,6 +1,7 @@
 const knex = require("../db");
 const UserUpdateDto = require("../dtos/UserUpdateDto");
 const User = require("../entities/User");
+const basketService = require("../service/BasketService");
 
 class UserService {
   async update(id, userUpdateDto) {
@@ -20,6 +21,13 @@ class UserService {
       updateUser.updatedAt,
       updateUser.avatar
     );
+  }
+  async createBasket(userId, bookId) {
+    return knex.transaction(async (trx) => {
+      const basket = await basketService.create(userId);
+      await basketService.addBook(basket.user_id, bookId);
+      return basket.user_id;
+    });
   }
 }
 

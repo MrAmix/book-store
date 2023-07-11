@@ -11,14 +11,48 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ReviewBody from "./ReviewBody";
 import IntroductionReviewBody from "./IntroductionReviewBody";
+import { AuthContext } from "../../App";
 
 
 export default function MultiActionAreaCard() {
-  const [fetching,setFetching]=useState(true)
   const params = useParams();
+  const navigate = useNavigate();
+  const { globalStore } = React.useContext(AuthContext);
+  
+ const addBasket = async () => {
+   if (!globalStore.isAuth){
+   return navigate("/login")
+  }
+
+   if(!globalStore.basketId){
+     const response = await fetch(`http://localhost:5000/api/users/${globalStore.user.id}/baskets`, {
+       method: "POST",
+       body: JSON.stringify({ bookId:params.id }),
+       headers: {
+         "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        globalStore.countBasket++;
+      }
+      
+    }
+    const response = await fetch(`http://localhost:5000/api/users/${globalStore.user.id}/baskets/${globalStore.basketId}`, {
+       method: "PUT",
+       body: JSON.stringify({ bookId:params.id }),
+       headers: {
+         "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        globalStore.countBasket++;
+      }
+  }
+
+  const [fetching,setFetching]=useState(true)
   const [book, setBook] = useState({});
   const style = {
     width: '100%',
@@ -78,8 +112,8 @@ export default function MultiActionAreaCard() {
           <Rating name="read-only" value={value} readOnly />      
         </Box>
         <CardActions>
-          <Button size="small" color="primary">
-            Купить за {book.price?.price}
+          <Button size="small" color="primary" onClick={addBasket}>
+            Купить за  {book.price?.price}
           </Button>
         </CardActions>
         <List sx={style} component="nav" aria-label="mailbox folders">

@@ -8,6 +8,8 @@ const userUpdateDto = require("../dtos/UserUpdateDto");
 const AlradyExistsError = require("../error/AlreadyExistsError");
 const Crypto = require("../utils/Crypto");
 const Jwt = require("../utils/Jwt");
+const basketService = require("../service/BasketService");
+
 class UserController {
   async registration(req, res, next) {
     try {
@@ -62,7 +64,16 @@ class UserController {
     }
   } // логин и пароль
 
-  async createBasket(req, res) {}
+  async createBasket(req, res) {
+    const userId = req.params.id;
+    const bookId = req.body.bookId;
+    return userService.createBasket(userId, bookId);
+  }
+  async addBookBasket(req, res) {
+    const bookId = req.body.bookId;
+    const basketId = req.params.basketId;
+    return basketService.addBook(bookId, basketId);
+  }
 
   async createReview(req, res) {}
 

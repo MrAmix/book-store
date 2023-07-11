@@ -1,10 +1,10 @@
 import React from "react";
 import NavBar from "../components/NavBar/booksNavbar";
-import MyOrdersUserBody from "../components/Body/MyOrdersUserBody";
+import BasketBody from "../components/Body/BasketBody";
 import { observer } from "mobx-react-lite";
 
 function basket() {
-  return [<NavBar />, <MyOrdersUserBody />];
+  return [<NavBar />, <BasketBody />];
 }
 
 export default observer(basket);

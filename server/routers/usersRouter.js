@@ -24,6 +24,8 @@ const upload = multer({
 
 router.post(`/:id/baskets`, UserController.createBasket);
 
+router.put(`/:id/baskets/:basketId`, UserController.addBookBasket);
+
 router.post(`/login`, userLoginMiddleware, UserController.login);
 
 router.post(

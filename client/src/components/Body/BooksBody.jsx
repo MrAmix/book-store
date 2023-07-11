@@ -52,7 +52,8 @@ const scrollHandler = (e) => {
 };
 
 return (
-<Container sx={{margin: '0 auto'}}>
+            
+            <Container sx={{margin: '0 auto'}}>
 
     <ImageList sx={{ }} cols={5}>
     {books.map((book) => (
@@ -64,7 +65,7 @@ return (
         sx={{
             height: "80%",
             width: "80%",
-            objectFit: "cover"
+            objectFit: "cover",
            // maxHeight: { xs: 200, md: 200 },
            // maxWidth: { xs: 200, md: 200 },
         }}

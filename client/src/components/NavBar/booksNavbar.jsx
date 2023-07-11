@@ -138,14 +138,14 @@ export default function BooksNavbar() {
           aria-label="show 17 new books"
           color="inherit"
         >
-          <Badge badgeContent={17} color="error" >
+          <Badge badgeContent={globalStore.countBasket} color="error" >
             <ShoppingCartIcon />
           </Badge>
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
-      <RouterLink to="/user/:id/basket" color="inherit">
+      <RouterLink to={globalStore.isAuth ? `/user/${globalStore.user.id}/basket` : "/login"} color="inherit">
 
       <Link
               //href="/user/:id/basket" color="inherit"
@@ -157,7 +157,6 @@ export default function BooksNavbar() {
     </Menu>
   );
 
-  const test = 10;
   
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -204,13 +203,13 @@ export default function BooksNavbar() {
 
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex",  } }}>
-      <RouterLink to="/user/:id/basket" color="inherit">
+      <RouterLink to={globalStore.isAuth ? `/user/${globalStore.user.id}/basket` : "/login"} color="inherit">
             <IconButton
               size="large"
               aria-label="show count new books"
               color="inherit"
             >
-              <Badge badgeContent={test} color="error">
+              <Badge badgeContent={globalStore.countBasket} color="error">
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>

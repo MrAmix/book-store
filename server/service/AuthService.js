@@ -25,6 +25,8 @@ class authService {
         login: userLoginDto.login,
         password: userLoginDto.password,
       })
+      .leftJoin("baskets", "baskets.user_id", "users.id")
+
       .first();
   }
 }

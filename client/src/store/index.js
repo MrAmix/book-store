@@ -15,6 +15,9 @@ export default class Store {
   setCoutBasket(namber) {
     this.countBasket += namber;
   }
+  setBasket(basketId) {
+    this.basketId = basketId;
+  }
 
   async registration(name, login, password) {
     console.log(name, login, password);
@@ -49,6 +52,7 @@ export default class Store {
       console.log("Успех:", JSON.stringify(json));
       this.user = { ...json.user };
       this.setAuth(true);
+      this.setBasket(this.user.user_id);
 
       return { status: true };
     }

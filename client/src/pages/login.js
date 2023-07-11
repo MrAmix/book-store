@@ -5,7 +5,6 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import Joi from "joi";
 import { observer } from "mobx-react-lite";
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -19,8 +18,8 @@ function Login() {
     formState: { errors },
   } = useForm();
   const onSubmit = async (data) => {
+    console.log(data);
     const errorStatus = await globalStore.login(data.LoginName, data.password);
-
     if (!errorStatus.status) {
       return;
     }

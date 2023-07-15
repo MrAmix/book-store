@@ -35,11 +35,16 @@ export default function MultiActionAreaCard() {
          "Content-Type": "application/json",
         },
       });
+      console.log(response)
       if (response.ok) {
         globalStore.countBasket++;
       }
       
     }
+
+
+
+
     const response = await fetch(`http://localhost:5000/api/users/${globalStore.user.id}/baskets/${globalStore.basketId}`, {
        method: "PUT",
        body: JSON.stringify({ bookId:params.id }),
@@ -47,6 +52,7 @@ export default function MultiActionAreaCard() {
          "Content-Type": "application/json",
         },
       });
+
       if (response.ok) {
         globalStore.countBasket++;
       }

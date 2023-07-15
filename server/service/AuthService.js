@@ -26,8 +26,14 @@ class authService {
         password: userLoginDto.password,
       })
       .leftJoin("baskets", "baskets.user_id", "users.id")
-
-      .first();
+      .leftJoin(
+        "baskets_have_books",
+        "baskets_have_books.basket_id",
+        "baskets.user_id"
+      )
+      .count("baskets_have_books.book_id as booksCount")
+      .groupBy("users.id", "baskets.user_id", "baskets_have_books.basket_id")
+      .first("users.*", "baskets.*");
   }
 }
 

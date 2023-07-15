@@ -24,7 +24,7 @@ import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import { AuthContext } from "../../App";
 import PersonIcon from '@mui/icons-material/Person';
 import Avatar from '@mui/material/Avatar';
-
+import { observer } from 'mobx-react-lite'
 
 
 const Search = styled("div")(({ theme }) => ({
@@ -67,10 +67,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function BooksNavbar() {
+ function BooksNavbar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const { globalStore } = React.useContext(AuthContext);
-
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
@@ -216,7 +215,7 @@ export default function BooksNavbar() {
             </RouterLink>
             
             {globalStore.isAuth ? (
-              <RouterLink to={"/user/:id"} color="inherit">
+              <RouterLink to={`/users/${globalStore.user.id}`} color="inherit">
               <Link sx={{display: "flex", alignItems: "center"}}  color="inherit">
                 <Avatar alt="Remy Sharp" src={`http://localhost:5000/images/${globalStore.user.avatar}`}>
                   <PersonIcon/>
@@ -251,3 +250,5 @@ export default function BooksNavbar() {
   
 
 }
+
+export default observer(BooksNavbar)

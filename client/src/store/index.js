@@ -12,15 +12,14 @@ export default class Store {
   setAuth(boolean) {
     this.isAuth = boolean;
   }
-  setCoutBasket(namber) {
-    this.countBasket += namber;
+  setCoutBasket(number) {
+    this.countBasket = number;
   }
   setBasket(basketId) {
     this.basketId = basketId;
   }
 
   async registration(name, login, password) {
-    console.log(name, login, password);
     const response = await fetch(
       "http://localhost:5000/api/users/registration",
       {
@@ -53,7 +52,7 @@ export default class Store {
       this.user = { ...json.user };
       this.setAuth(true);
       this.setBasket(this.user.user_id);
-
+      this.setCoutBasket(this.user.booksCount);
       return { status: true };
     }
 

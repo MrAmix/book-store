@@ -1,5 +1,6 @@
 const router = require(`express`).Router();
 const UserController = require("../controllers/userController");
+const BasketController = require("../controllers/basketController");
 const userLoginMiddleware = require("../middleware/UserLoginMiddleware");
 const userRegistrationMiddleware = require("../middleware/UserRegistrationMiddleware");
 const multer = require("multer");
@@ -23,8 +24,12 @@ const upload = multer({
 });
 
 router.post(`/:id/baskets`, UserController.createBasket);
-
 router.put(`/:id/baskets/:basketId`, UserController.addBookBasket);
+router.get(`/:id/baskets/:basketId/books`, BasketController.getBooks);
+router.delete(
+  `/:id/baskets/:basketId/books/:bookId`,
+  BasketController.deleteBook
+);
 
 router.post(`/login`, userLoginMiddleware, UserController.login);
 
@@ -33,9 +38,9 @@ router.post(
   userRegistrationMiddleware,
   UserController.registration
 );
-router.get(`/:id/orders`, UserController.getOrders);
-
 router.get(`/auth`, UserController.check);
+
+router.get(`/:id/orders`, UserController.getOrders);
 router.get(`/:id`);
 router.put(`/:id`, upload.single("avatar"), UserController.update);
 

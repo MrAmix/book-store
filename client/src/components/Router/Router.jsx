@@ -32,11 +32,11 @@ const Router = () => {
             <Route path='login' element={<Login />} />
             <Route path='books' element={<Books />} />
             <Route path='books/:id' element={<Book />} />
-            <Route path='user/:id' element={<User />} />
-            <Route path='/user/:id/personal' element={<Personal />} />
-            <Route path='/user/:id/orders' element={<Orders />} />
-            <Route path='/user/:id/reviews' element={<Reviews />} />
-            <Route path='/user/:id/basket' element={<Basket />} />
+            <Route path='users/:id' element={<User />} />
+            <Route path='/users/:id/personal' element={<Personal />} />
+            <Route path='/users/:id/orders' element={<Orders />} />
+            <Route path='/users/:id/reviews' element={<Reviews />} />
+            <Route path='/users/:id/basket' element={<Basket />} />
             <Route path='/chat' element={<Chat />} />
 
             <Route path='*' element={<ErrorPage />}></Route>

@@ -41,19 +41,16 @@ class UserController {
         process.env.AUTH_SALT,
         process.env.AUTH_ITERATIONS
       );
-      console.log(encryptedPassword);
       const user = await authService.login(
         new userLoginDto(login, encryptedPassword)
       );
 
-      console.log(user);
 
       if (!user) {
         next(ApiError.notFound("wrong login or password"), req, res);
         return;
       }
 
-      // console.log(user);
 
       return res.json({
         user: user,
@@ -72,7 +69,7 @@ class UserController {
   async addBookBasket(req, res) {
     const bookId = req.body.bookId;
     const basketId = req.params.basketId;
-    return basketService.addBook(bookId, basketId);
+    res.json(basketService.addBook(bookId, basketId));
   }
 
   async createReview(req, res) {}

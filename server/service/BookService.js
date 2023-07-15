@@ -13,19 +13,17 @@ class bookService {
         "books.*",
         "prices.price",
         "prices.currency",
-        knex.raw(`
-    (
-      SELECT json_agg(
-        json_build_object(
-          'user', json_build_object('name', u.name, 'avatar', u.avatar),
-          'text', r.text
-        )
-      )
-      FROM reviews r
-      INNER JOIN users u ON u.id = r.user_id
-      WHERE books.id = r.book_id
-    ) AS reviews
-    `)
+        knex.raw(`(
+          SELECT json_agg(
+            json_build_object(
+              'user', json_build_object('name', u.name, 'avatar', u.avatar),
+              'text', r.text
+            )
+          )
+          FROM reviews r
+          INNER JOIN users u ON u.id = r.user_id
+          WHERE books.id = r.book_id
+        ) AS reviews`)
       )
       .join("prices", "prices.book_id", "books.id")
       .where("books.id", bookGetOneDto.book_id);

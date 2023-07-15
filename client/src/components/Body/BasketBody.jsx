@@ -1,91 +1,124 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Box from '@mui/material/Box';
 import Button from "@mui/material/Button";
-import Drawer from '@mui/material/Drawer';
 import Typography from '@mui/material/Typography';
 import { Link as RouterLink } from "react-router-dom";
-
-import Toolbar from '@mui/material/Toolbar';
-import Divider from '@mui/material/Divider';
+import Rating from '@mui/material/Rating';
+import IconButton from '@mui/material/IconButton';
 import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import LocalMallIcon from '@mui/icons-material/LocalMall';
 import List from '@mui/material/List';
-import RateReviewIcon from '@mui/icons-material/RateReview';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import Avatar from '@mui/material/Avatar';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { AuthContext } from "../../App";
+import { Sidebar } from "../Sidebar/Sidebar";
 
 export default function MultiActionAreaCard() {
-  const drawerWidth = 280;
-    const book = {name:"Корзина товаров", preview:"https://images.chesscomfiles.com/uploads/v1/user/77559592.9cb711dc.160x160o.e195dd620cda@2x.jpeg",
+  const { globalStore } = React.useContext(AuthContext);
+  const [fetching, setFetching]=useState(true);
+  const [books, setBooks] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+          if (fetching) {
+            const response = await fetch(`http://localhost:5000/api/users/${globalStore.user.id}/baskets/${globalStore.basketId}/books`, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            });
+        
+            if (response.ok) {
+              const data = await response.json();
+              setBooks(data);
+            }
+          }
+        }
+        fetchData()
+      .catch(console.error).finally(()=>setFetching(false));
+  }, [globalStore, fetching]);
+  
+  const deleteBook = async (bookId) => {
+    const response = await fetch(`http://localhost:5000/api/users/${globalStore.user.id}/baskets/${globalStore.basketId}/books/${bookId}`, {
+      method: 'DELETE' 
+    });
+    
+    if (response.ok) {
+      setBooks(books.filter(b => b.id !== bookId));
+      globalStore.countBasket--;
     }
+  }
 
   return (
     <Box sx={{ display: 'flex' }}>
-     
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
-        }}
-      >
-        <Toolbar />
-        <Box sx={{ overflow: 'auto' }}>
-        <List sx={{display: "flex", alignItems: "center",flexDirection:"column"}}
-            >
-              {[{title:"Редактировать профиль",link:"/user/:id/personal",icon:AccountBoxIcon},{title:"Мои заказы", link:"/user/:id/orders",icon:LocalMallIcon},{title:"Мои отзывы",link:"/user/:id/reviews",icon:RateReviewIcon}].map((el, index) => (
-
-              <ListItem key={el.title} disablePadding>
-                <RouterLink to={el.link}>
-                <ListItemButton>
-
-                  <ListItemIcon>
-                    { <el.icon /> }
-                  </ListItemIcon>
-                  <ListItemText primary={el.title} />
-                </ListItemButton>
-                </RouterLink>
-              </ListItem>
-            ))}
-            </List>
-          
-          <Divider />
-        </Box>
-      </Drawer>
+      <Sidebar/>
       <Box component="main" sx={{ flexGrow: 1, p: 1 }}>
-        
-  
-    <Card sx={{display:'flex'}}>
-      
-
-        <CardContent>
-
-
-    <Box component="form" noValidate >
-    <Typography gutterBottom variant="h5" align="center" component="div">
-            {book.name}
-          </Typography>
-    
-            <Button
-            color='success'
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-            >
-            Оформить заказ
-          </Button>
-          </Box>
-          </CardContent>
-    </Card>
-    
-    
+        <Card sx={{display:'flex', alignItems: "center"}}>
+          <CardContent sx={{width: '100%'}}>
+            <Box component="form" noValidate >
+              <Typography gutterBottom variant="h5" align="center" component="div">{"Корзина"}</Typography>
+              <List>
+                {books.map((book) => {
+                  return (
+                    <ListItem 
+                        sx={{width: '100%'}} 
+                        key={book.id} 
+                        secondaryAction={
+                          <IconButton edge="end" aria-label="delete" onClick={() => deleteBook(book.id)}>
+                            <DeleteIcon />
+                          </IconButton>
+                      }>
+                        <RouterLink to = {`/books/${book.id}`} sx={{textDecoration: 'none', color: 'inherit'}}>
+                          <ListItemAvatar>
+                            <Avatar 
+                              sx={{ 
+                                height: "160px",
+                                width: "100px", 
+                                objectFit: 'cover',
+                                marginRight:"35px" 
+                              }} 
+                              alt="Profile Picture" 
+                              src={`http://localhost:5000/images/${book.preview}`} 
+                              variant="rounded"
+                              />
+                          </ListItemAvatar>
+                        </RouterLink>
+                        <ListItemText 
+                          primary={book.name} 
+                          secondary={
+                            <React.Fragment>
+                              <Box>
+                                <Rating name="read-only" value={5} readOnly />
+                              </Box>
+                              <Box>
+                                {`Цена: ${book.price.price}`}
+                              </Box>
+                              <Box>
+                                {book.description}
+                              </Box>
+                            </React.Fragment>
+                          }
+                        />
+                      </ListItem>
+                  )
+                })}
+              </List>
+              <Button
+                color='success'
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+              Оформить заказ
+              </Button>
             </Box>
-          </Box>
-    );
+          </CardContent>
+        </Card>
+      </Box>
+    </Box>
+  );
 }

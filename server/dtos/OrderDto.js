@@ -1,9 +1,9 @@
 class orderDto {
-  constructor(book_id, user_id, status, delivered_at) {
-    this.book_id = book_id;
-    this.user_id = user_id;
+  constructor(bookIds, userId, status, deliveredAt) {
+    this.bookIds = bookIds;
+    this.userId = userId;
     this.status = status;
-    this.delivered_at = delivered_at;
+    this.deliveredAt = deliveredAt;
   }
 }
 

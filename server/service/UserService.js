@@ -5,7 +5,6 @@ const basketService = require("../service/BasketService");
 
 class UserService {
   async update(id, userUpdateDto) {
-    console.log(userUpdateDto);
     const updateUser = await knex("users").where("id", id).update({
       name: userUpdateDto.name,
       password: userUpdateDto.password,
@@ -25,7 +24,8 @@ class UserService {
   async createBasket(userId, bookId) {
     return knex.transaction(async (trx) => {
       const basket = await basketService.create(userId);
-      await basketService.addBook(basket.user_id, bookId);
+      console.log(basket);
+      await basketService.addBook(bookId, basket[0].user_id);
       return basket.user_id;
     });
   }

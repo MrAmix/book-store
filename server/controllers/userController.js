@@ -5,10 +5,13 @@ const userService = require("../service/UserService");
 const userRegistrationDto = require("../dtos/UserRegistrationDto");
 const userLoginDto = require("../dtos/UserLoginDto");
 const userUpdateDto = require("../dtos/UserUpdateDto");
+const orderDto = require("../dtos/OrderDto");
 const AlradyExistsError = require("../error/AlreadyExistsError");
 const Crypto = require("../utils/Crypto");
 const Jwt = require("../utils/Jwt");
 const basketService = require("../service/BasketService");
+const orderService = require("../service/OrderService");
+const { json } = require("sequelize");
 
 class UserController {
   async registration(req, res, next) {
@@ -45,27 +48,31 @@ class UserController {
         new userLoginDto(login, encryptedPassword)
       );
 
-
       if (!user) {
         next(ApiError.notFound("wrong login or password"), req, res);
         return;
       }
-
 
       return res.json({
         user: user,
         jwt_token: Jwt.create(user.id, login, user.is_admin ? "ADMIN" : "USER"),
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   } // логин и пароль
 
   async createBasket(req, res) {
     const userId = req.params.id;
     const bookId = req.body.bookId;
-    return userService.createBasket(userId, bookId);
+    res.json(await userService.createBasket(userId, bookId));
   }
+
+  async deleteBasket(req, res) {
+    const userId = req.params.id;
+    res.json(await basketService.delete(userId));
+  }
+
   async addBookBasket(req, res) {
     const bookId = req.body.bookId;
     const basketId = req.params.basketId;
@@ -74,23 +81,10 @@ class UserController {
 
   async createReview(req, res) {}
 
-  //POST /api/users/:user_id/orders
+  //POST /api/users/:userd/orders
   async createOrder(req, res) {
-    //Прописывать ли status?
-    req.body.map((book) => {
-      if (book.count > 5) {
-        throw Error("TEST");
-      }
-    });
-    //req.params.user_id???
-    //req.body.book_ids []book_id???
-    const order = orderService.create(
-      new orderDto(
-        req.body.book_id,
-        req.body.user_id,
-        req.body.status,
-        req.body.delivered_at
-      )
+    const order = await orderService.create(
+      new orderDto(req.body.bookIds, req.params.id, "В обработке", new Date())
     );
     res.json(order);
   }

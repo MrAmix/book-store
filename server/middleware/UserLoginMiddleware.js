@@ -10,7 +10,6 @@ module.exports = function (req, res, next) {
   });
 
   const { error } = schema.validate(req.body, { abortEarly: false });
-  console.log(error);
   if (error) {
     throw ApiError.badrequest(error.details.map((detail) => detail.message));
   }

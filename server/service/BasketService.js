@@ -43,7 +43,6 @@ class BasketService {
     `)
       );
 
-    console.log(result);
     return result.map(
       (book) =>
         new Book(

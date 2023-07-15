@@ -31,6 +31,8 @@ router.delete(
   BasketController.deleteBook
 );
 
+router.delete(`/:id/baskets/:basketId`, UserController.deleteBasket);
+
 router.post(`/login`, userLoginMiddleware, UserController.login);
 
 router.post(
@@ -41,6 +43,7 @@ router.post(
 router.get(`/auth`, UserController.check);
 
 router.get(`/:id/orders`, UserController.getOrders);
+router.post(`/:id/orders`, UserController.createOrder);
 router.get(`/:id`);
 router.put(`/:id`, upload.single("avatar"), UserController.update);
 

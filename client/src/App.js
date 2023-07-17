@@ -4,8 +4,6 @@ import Router from "./components/Router/Router";
 import Store from "./store/index";
 import { observer } from "mobx-react-lite";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { purple } from "@mui/material/colors";
-import { Box } from "@mui/material";
 export const globalStore = new Store();
 export const AuthContext = React.createContext({ globalStore });
 

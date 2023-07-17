@@ -14,7 +14,6 @@ import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import { useNavigate, useParams } from "react-router-dom";
 import ReviewBody from "./ReviewBody";
-import IntroductionReviewBody from "./IntroductionReviewBody";
 import { AuthContext } from "../../App";
 
 const blue = {

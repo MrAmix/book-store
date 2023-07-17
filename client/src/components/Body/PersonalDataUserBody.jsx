@@ -12,7 +12,6 @@ import img from "../../img/2023.png";
 import FormControl from "@mui/base/FormControl";
 import Input from "@mui/base/Input";
 import axios from "axios";
-import Avatar from "react-avatar-edit";
 import ImageListItem from "@mui/material/ImageListItem";
 import { useNavigate } from "react-router-dom";
 

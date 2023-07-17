@@ -8,7 +8,8 @@ class Book {
     pageCount,
     ageLimit,
     price,
-    reviews
+    reviews,
+    author
   ) {
     this.id = Number(id);
     this.name = name;
@@ -19,6 +20,7 @@ class Book {
     this.ageLimit = ageLimit;
     this.price = price;
     this.reviews = reviews || [];
+    this.author = author;
   }
 }
 module.exports = Book;

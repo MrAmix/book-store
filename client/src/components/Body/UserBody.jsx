@@ -1,3 +1,4 @@
+// import React, { useState, useEffect } from "react";
 import React from 'react';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -39,6 +40,7 @@ export default function FixedBottomNavigation() {
     <Box sx={{ pb: 7 }} ref={ref}>
       <CssBaseline />
       <List >
+        
         
         {messages.map(({ primary, secondary, person }, index) => (
             <ListItem button key={index + person}>

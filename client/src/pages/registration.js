@@ -26,24 +26,12 @@ export default function Login() {
       data.login,
       data.password
     );
+
     if (!errorStatus.status) {
       return;
     }
-    navigate("/login");
-    // if (!errorStatus.status) {
-    //   return;
-    // }
-    //navigate("/books");
-  };
 
-  const handleSubmit1 = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      Name: data.get("name"),
-      Login: data.get("login"),
-      password: data.get("password"),
-    });
+    navigate("/login");
   };
 
   const catchErrorName = (typeError) => {

@@ -29,5 +29,6 @@ router.get(`/:id`, bookController.getOne);
 router.delete(`/:id`, bookController.delete);
 router.put(`/:id`, bookController.update);
 router.post(`/`, upload.single("preview"), bookController.create);
+router.post(`/:id/reviews`, bookController.createReview);
 
 module.exports = router;

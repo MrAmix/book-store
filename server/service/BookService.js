@@ -13,6 +13,7 @@ class bookService {
         "books.*",
         "prices.price",
         "prices.currency",
+        "authors.name as authorName",
         knex.raw(`(
           SELECT json_agg(
             json_build_object(
@@ -26,6 +27,7 @@ class bookService {
         ) AS reviews`)
       )
       .join("prices", "prices.book_id", "books.id")
+      .join("authors", "authors.id", "books.author_id")
       .where("books.id", bookGetOneDto.book_id);
 
     console.log(book);
@@ -38,7 +40,8 @@ class bookService {
       book.page_count,
       book.age_limit,
       new Price(book.price, book.currency),
-      book.reviews
+      book.reviews,
+      book.authorName
     );
   }
 
@@ -60,6 +63,7 @@ class bookService {
     data.name = bookUpdateDto.name;
     data.pageCount = bookUpdateDto.pageCount;
     data.ageLimit = bookUpdateDto.ageLimit;
+    data.autor_id = bookUpdateDto.autor_id;
     const updateBook = await knex("books")
       .where("id", bookUpdateDto.id)
       .update(data);
@@ -67,6 +71,7 @@ class bookService {
   }
 
   async create(bookCreateDto) {
+    console.log(bookCreateDto);
     return knex.transaction(async (trx) => {
       let book = {};
       book.description = bookCreateDto.description;
@@ -75,6 +80,7 @@ class bookService {
       book.name = bookCreateDto.name;
       book.page_count = bookCreateDto.pageCount;
       book.age_limit = bookCreateDto.ageLimit;
+      book.author_id = bookCreateDto.author_id;
 
       const newBook = (await trx("books").insert(book).returning("*"))[0];
 
@@ -92,6 +98,7 @@ class bookService {
         newBook.preview,
         newBook.page_count,
         newBook.age_limit,
+        newBook.author_id,
         new Price(newPrice.price, newPrice.currency)
       );
     });

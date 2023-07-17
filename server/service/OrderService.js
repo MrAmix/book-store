@@ -28,7 +28,10 @@ class OrderService {
   }
 
   async getUserOrders(user_id) {
-    return knex("orders").where("user_id", user_id).select();
+    return knex("orders")
+      .join("books", "orders.book_id", "books.id")
+      .where({ user_id: user_id })
+      .select("orders.*", "books.*");
   }
 }
 

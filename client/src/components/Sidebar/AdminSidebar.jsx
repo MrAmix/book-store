@@ -17,15 +17,13 @@ import { AuthContext } from "../../App";
 import { useNavigate } from "react-router-dom";
 const drawerWidth = 280; 
 
-export const Sidebar = observer(() => {
+export const AdminSidebar = observer(() => {
     const { globalStore } = React.useContext(AuthContext);
     const navigate = useNavigate();
     
     const listItems = [
-        {title:"Редактировать профиль", link:`/users/${globalStore.user.id}/personal`, icon:AccountBoxIcon},
-        {title:"Мои заказы", link:`/users/${globalStore.user.id}/orders`, icon:LocalMallIcon},
-        {title:"Мои отзывы", link:`/users/${globalStore.user.id}/reviews`, icon:LocalMallIcon},
-        {title:"Корзина", link:`/users/${globalStore.user.id}/basket`, icon:RateReviewIcon},
+        {title:"Создать книгу", link:`/bookCreate`, icon:AccountBoxIcon},
+        {title:"Создать автора", link:`/authorCreate`, icon:AccountBoxIcon},
     ];
     
     const logout = async () => {

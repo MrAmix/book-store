@@ -3,6 +3,7 @@ const Review = require("../entities/Review");
 const User = require("../entities/User");
 const Book = require("../entities/Book");
 const Price = require("../entities/Price");
+const { text } = require("express");
 
 class ReviewService {
   async getAll() {
@@ -127,6 +128,33 @@ class ReviewService {
         )
       );
     });
+  }
+  async getUserReviews(user_id) {
+    return knex("reviews")
+      .innerJoin("books", "books.id", "=", "reviews.book_id")
+      .where({ user_id: user_id })
+      .select(
+        "reviews.id",
+        "reviews.text",
+        "reviews.created_at",
+        "reviews.updated_at",
+        "books.id as book_id",
+        "books.name as book_name",
+        "books.description as book_description",
+        "books.preview as book_preview",
+        "books.count as book_count",
+        "books.created_at as book_created_at",
+        "books.updated_at as book_updated_at"
+      );
+  }
+  async create(reviewCreateDto) {
+    return knex("reviews")
+      .insert({
+        user_id: reviewCreateDto.user_id,
+        book_id: reviewCreateDto.book_id,
+        text: reviewCreateDto.text,
+      })
+      .returning("*");
   }
 }
 

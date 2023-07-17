@@ -11,6 +11,7 @@ const Crypto = require("../utils/Crypto");
 const Jwt = require("../utils/Jwt");
 const basketService = require("../service/BasketService");
 const orderService = require("../service/OrderService");
+const reviewService = require("../service/reviewService");
 const { json } = require("sequelize");
 
 class UserController {
@@ -81,7 +82,11 @@ class UserController {
 
   async createReview(req, res) {}
 
-  //POST /api/users/:userd/orders
+  async getReviews(req, res) {
+    const userReviews = await reviewService.getUserReviews(req.params.id);
+    res.json(userReviews);
+  }
+
   async createOrder(req, res) {
     const order = await orderService.create(
       new orderDto(req.body.bookIds, req.params.id, "В обработке", new Date())
@@ -107,13 +112,15 @@ class UserController {
     );
     res.json(userOrder);
   }
+
   async update(req, res) {
+    console.log(req.body);
     const encryptedPassword = Crypto.encrypt(
       req.body.password,
       process.env.AUTH_SALT,
       process.env.AUTH_ITERATIONS
     );
-    const newUser = userService.update(
+    const newUser = await userService.update(
       req.params.id,
       new userUpdateDto(
         req.body.name,
@@ -122,7 +129,15 @@ class UserController {
         req.file.filename
       )
     );
-    res.json(newUser);
+
+    return res.json({
+      user: newUser,
+      jwt_token: Jwt.create(
+        newUser.id,
+        newUser.login,
+        newUser.is_admin ? "ADMIN" : "USER"
+      ),
+    });
   }
 }
 module.exports = new UserController();

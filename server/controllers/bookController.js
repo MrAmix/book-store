@@ -3,6 +3,7 @@ const bookCreateDto = require("../dtos/BookCreateDto");
 const bookUpdateDto = require("../dtos/BookUpdateDto");
 const bookDeleteDto = require("../dtos/BookDeleteDto");
 const bookGetOneDto = require("../dtos/BookGetOneDto");
+const reviewCreateDto = require("../dtos/reviewCreateDto");
 const bookService = require("../service/BookService");
 
 class bookController {
@@ -34,7 +35,8 @@ class bookController {
         req.body.preview,
         req.body.name,
         req.body.pageCount,
-        req.body.ageLimit
+        req.body.ageLimit,
+        req.body.author_id
       )
     );
     res.json(updateBook);
@@ -50,11 +52,18 @@ class bookController {
         req.body.currency,
         req.body.price,
         req.body.pageCount,
-        req.body.ageLimit
+        req.body.ageLimit,
+        req.body.author_id
       )
     );
 
     res.json(newBook);
+  }
+  async createReview(req, res) {
+    const newReview = await bookService.create(
+      new reviewCreateDto(req.body.text, req.params.id, req.body.user_id)
+    );
+    res.json(newReview);
   }
 }
 

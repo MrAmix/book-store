@@ -19,7 +19,6 @@ const ChatBody=() => {
       const  newMessages=[...messages,value]
       setMessages(newMessages)
       setValue(``)
-      console.log(newMessages)
     }
   }
   return(

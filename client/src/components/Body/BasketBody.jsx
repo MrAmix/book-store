@@ -4,7 +4,7 @@ import CardContent from '@mui/material/CardContent';
 import Box from '@mui/material/Box';
 import Button from "@mui/material/Button";
 import Typography from '@mui/material/Typography';
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import Rating from '@mui/material/Rating';
 import IconButton from '@mui/material/IconButton';
 import ListItem from '@mui/material/ListItem';
@@ -20,10 +20,11 @@ export default function MultiActionAreaCard() {
   const { globalStore } = React.useContext(AuthContext);
   const [fetching, setFetching]=useState(true);
   const [books, setBooks] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
-          if (fetching) {
+          if (fetching && globalStore.basketId) {
             const response = await fetch(`http://localhost:5000/api/users/${globalStore.user.id}/baskets/${globalStore.basketId}/books`, {
               method: "GET",
               headers: {
@@ -49,6 +50,37 @@ export default function MultiActionAreaCard() {
     if (response.ok) {
       setBooks(books.filter(b => b.id !== bookId));
       globalStore.countBasket--;
+      globalStore.hydrateStore();
+    }
+  }
+
+  const createOrder = async () => {
+    const response = await fetch(`http://localhost:5000/api/users/${globalStore.user.id}/orders`, {
+      method: 'POST',
+      body:JSON.stringify( {
+        userId: globalStore.user.id,
+        bookIds: books.map(book=> book.id)
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    
+    if (response.ok) {
+      await deleteBasket();
+    }
+  }
+
+  const deleteBasket = async () => {
+    const response = await fetch(`http://localhost:5000/api/users/${globalStore.user.id}/baskets/${globalStore.basketId}`, {
+      method: 'DELETE' 
+    });
+    
+    if (response.ok) {
+      globalStore.setCoutBasket(0);
+      globalStore.setBasket(null);
+      globalStore.hydrateStore();
+      navigate(`/users/${globalStore.user.id}/orders`)
     }
   }
 
@@ -58,7 +90,7 @@ export default function MultiActionAreaCard() {
       <Box component="main" sx={{ flexGrow: 1, p: 1 }}>
         <Card sx={{display:'flex', alignItems: "center"}}>
           <CardContent sx={{width: '100%'}}>
-            <Box component="form" noValidate >
+            <Box>
               <Typography gutterBottom variant="h5" align="center" component="div">{"Корзина"}</Typography>
               <List>
                 {books.map((book) => {
@@ -108,9 +140,10 @@ export default function MultiActionAreaCard() {
               </List>
               <Button
                 color='success'
-                type="submit"
+                type="button"
                 fullWidth
                 variant="contained"
+                onClick={createOrder}
                 sx={{ mt: 3, mb: 2 }}
               >
               Оформить заказ

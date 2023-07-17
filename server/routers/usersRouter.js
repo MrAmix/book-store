@@ -41,6 +41,7 @@ router.post(
   UserController.registration
 );
 router.get(`/auth`, UserController.check);
+router.get(`/:id/reviews`, UserController.getReviews);
 
 router.get(`/:id/orders`, UserController.getOrders);
 router.post(`/:id/orders`, UserController.createOrder);

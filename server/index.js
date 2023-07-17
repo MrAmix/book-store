@@ -5,6 +5,7 @@ const usersRouter = require(`./routers/usersRouter`);
 const ordersRouter = require(`./routers/ordersRouter`);
 const booksRouter = require(`./routers/booksRouter`);
 const reviewsRouter = require(`./routers/reviewsRouter`);
+const authorsRouter = require(`./routers/authorsRouter`);
 const PORT = process.env.POST || 5000;
 const errorHandler = require("./middleware/ErrorHaddingMiddleware");
 const path = require("path");
@@ -16,6 +17,7 @@ app.use(`/api/users`, usersRouter);
 app.use(`/api/orders`, ordersRouter);
 app.use(`/api/books`, booksRouter);
 app.use(`/api/reviews`, reviewsRouter);
+app.use(`/api/authors`, authorsRouter);
 app.use("/images", express.static(path.join(__dirname, "..", "storage")));
 //app.use(`/api/UsersService`, UsersService);
 app.listen(PORT, () => {

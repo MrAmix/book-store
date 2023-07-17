@@ -18,17 +18,11 @@ function Login() {
     formState: { errors },
   } = useForm();
   const onSubmit = async (data) => {
-    console.log(data);
     const errorStatus = await globalStore.login(data.LoginName, data.password);
     if (!errorStatus.status) {
       return;
     }
     navigate("/books");
-
-    // if (!globalStore.isAuth) {
-    //   return;
-    // }
-    console.log(errorStatus);
   };
 
   const catchErrorLogin = (typeError) => {
@@ -42,35 +36,11 @@ function Login() {
     }
   };
 
-  // export default function App() {
-
-  //       return (
-  //   <form onSubmit={handleSubmit(onSubmit)}>
-  //       <input type="text" placeholder="First name" {...register("First name", {required: true, maxLength: 80})} />
-  //       <input type="text" placeholder="Last name" {...register("Last name", {required: true, maxLength: 100})} />
-  //       <input type="text" placeholder="Email" {...register("Email", {required: true, pattern: /^\S+@\S+$/i})} />
-  //       <input type="tel" placeholder="Mobile number" {...register("Mobile number", {required: true, minLength: 6, maxLength: 12})} />
-  //       <select {...register("Title", { required: true })}>
-  //         <option value="Mr">Mr</option>
-  //         <option value="Mrs">Mrs</option>
-  //         <option value="Miss">Miss</option>
-  //         <option value="Dr">Dr</option>
-  //       </select>
-
-  //       <input {...register("Developer", { required: true })} type="radio" value="Yes" />
-  //       <input {...register("Developer", { required: true })} type="radio" value="No" />
-
-  //       <input type="submit" />
-  //     </form>
-  //   );
-  // }
-
   const navigate = useNavigate();
   const { globalStore } = useContext(AuthContext);
   const [login, setLogin] = useState("");
   const changeLogin = (value) => {
     setLogin(value);
-    console.log(value);
   };
   const [password, setPassword] = useState("");
   const changePassword = (value) => {
@@ -102,9 +72,6 @@ function Login() {
           sx={{ mt: 1 }}
         >
           <TextField
-            onChange={(event) => {
-              console.log(event);
-            }}
             {...register("LoginName", { required: true, maxLength: 80 })}
             margin="normal"
             required

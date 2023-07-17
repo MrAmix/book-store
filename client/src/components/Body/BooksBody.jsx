@@ -1,6 +1,4 @@
 import React, {useState,useEffect} from "react";
-// import Box from '@mui/material/Box';
-// import Typography from "@mui/material/Typography";
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';

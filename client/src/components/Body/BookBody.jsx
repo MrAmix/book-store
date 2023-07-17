@@ -15,19 +15,23 @@ import { useNavigate, useParams } from "react-router-dom";
 import ReviewBody from "./ReviewBody";
 import IntroductionReviewBody from "./IntroductionReviewBody";
 import { AuthContext } from "../../App";
+import reviews from "../../pages/reviews";
 
 
 export default function MultiActionAreaCard() {
   const params = useParams();
   const navigate = useNavigate();
   const { globalStore } = React.useContext(AuthContext);
+  const [review, setReview] = useState("");
+  const [fetching,setFetching]=useState(true)
+  const [book, setBook] = useState({});
   
  const addBasket = async () => {
-   if (!globalStore.isAuth){
-   return navigate("/login")
+  if (!globalStore.isAuth){
+    return navigate("/login")
   }
 
-   if(!globalStore.basketId){
+  if(!globalStore.basketId){
      const response = await fetch(`http://localhost:5000/api/users/${globalStore.user.id}/baskets`, {
        method: "POST",
        body: JSON.stringify({ bookId:params.id }),
@@ -35,12 +39,14 @@ export default function MultiActionAreaCard() {
          "Content-Type": "application/json",
         },
       });
-      console.log(response)
+
       if (response.ok) {
         globalStore.countBasket++;
+        globalStore.setBasket(globalStore.user.id)
+        globalStore.hydrateStore();
+        return
       }
-      
-    }
+  }
 
 
 
@@ -55,11 +61,10 @@ export default function MultiActionAreaCard() {
 
       if (response.ok) {
         globalStore.countBasket++;
+        globalStore.hydrateStore();
       }
   }
 
-  const [fetching,setFetching]=useState(true)
-  const [book, setBook] = useState({});
   const style = {
     width: '100%',
     maxWidth: 360,    
@@ -79,7 +84,6 @@ export default function MultiActionAreaCard() {
         if (response.ok) {
           const json = await response.json();
   
-          console.log(json);
           setBook({...json});
 
           return
@@ -87,9 +91,20 @@ export default function MultiActionAreaCard() {
       }
     }
   
-    fetchData().catch(console.error).finally(()=>setFetching(false));
-  }, [fetching,book,params])
+  fetchData().catch(console.error).finally(()=>setFetching(false));
+}, [fetching,book,params])
 
+const createReview = async () => {
+  return fetch(`http://localhost:5000/api/books/${params.id}/reviews`, {
+    method: 'POST',
+    body:JSON.stringify( {
+      user_id: globalStore.user.id,
+      text: review,
+    }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })}
   return (
   <Container>
     <Card sx={{display:'flex'}}>
@@ -108,7 +123,7 @@ export default function MultiActionAreaCard() {
           {book.name}
         </Typography>
         <Typography gutterBottom variant="h6" component="div">
-          {book.author}
+          {`Автор: ${book.author}`}
         </Typography>
         <Typography variant="body2" color="text.secondary">
           {book.description}
@@ -119,7 +134,7 @@ export default function MultiActionAreaCard() {
         </Box>
         <CardActions>
           <Button size="small" color="primary" onClick={addBasket}>
-            Купить за  {book.price?.price}
+            Купить за  {book.price?.price} Рублей
           </Button>
         </CardActions>
         <List sx={style} component="nav" aria-label="mailbox folders">
@@ -137,8 +152,52 @@ export default function MultiActionAreaCard() {
         </List>
       </CardContent>
     </Card>
-    <ReviewBody reviews={book.reviews || []}/>
-    <IntroductionReviewBody/>
-  </Container>
+    {!globalStore.user.is_admin ? (
+      <Box>
+        <ReviewBody reviews={book.reviews || []}/>
+        <IntroductionReviewBody />
+        <Button
+          color='success'
+          //onClick={handleSubmit(onSubmit)}
+          fullWidth
+          variant="contained"
+          sx={{ 
+            mt: 3, 
+            mb: 2 
+          }}
+          >
+          Подтвердить
+        </Button>
+      </Box>
+      ) : (
+        <Box>
+          <Button
+            color='success'
+            //onClick={handleSubmit(onSubmit)}
+            fullWidth
+            variant="contained"
+            sx={{ 
+              mt: 3, 
+              mb: 2 
+            }}
+            >
+            Удалить книгу
+          </Button>
+          <Button
+            color='success'
+            //onClick={handleSubmit(onSubmit)}
+            fullWidth
+            variant="contained"
+            sx={{ 
+              mt: 3,
+              mb: 2 
+            }}
+            >
+            Изменить книгу
+          </Button>
+        </Box>
+        )
+      }
+    </Container>
   );
 }

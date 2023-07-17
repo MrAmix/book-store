@@ -7,7 +7,8 @@ class BookCreateDto {
     currency,
     price,
     pageCount,
-    ageLimit
+    ageLimit,
+    author_id
   ) {
     this.description = description;
     this.count = Number(count);
@@ -17,6 +18,7 @@ class BookCreateDto {
     this.currency = currency;
     this.pageCount = Number(pageCount);
     this.ageLimit = Number(ageLimit);
+    this.author_id = author_id;
   }
 }
 

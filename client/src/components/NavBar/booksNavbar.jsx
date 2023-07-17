@@ -160,7 +160,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   return (
     <Box sx={{ flexGrow: 1 }}>
       
-      <AppBar position="relative" sx={{zIndex: (theme) => theme.zIndex.drawer + 1}}>
+      <AppBar position="fixed" sx={{zIndex: (theme) => theme.zIndex.drawer + 1}}>
         <Toolbar>
       <RouterLink to="/books" color="inherit">
 
@@ -199,23 +199,43 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
               Онлайн чат
             </Link>
             </RouterLink>
+          {globalStore.user.is_admin ? (
+            <RouterLink to={"/bookCreate"} color="inherit">
+              <Link 
+                sx={{
+                  display: "flex", 
+                  alignItems: "center",
+                  marginLeft:"10px"
+                }}
+                color="inherit"
+              >
+                Создать книгу
+               </Link>
+            </RouterLink>) : (
+              undefined
+            )
+          } 
+           
 
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex",  } }}>
-      <RouterLink to={globalStore.isAuth ? `/user/${globalStore.user.id}/basket` : "/login"} color="inherit">
+            {!globalStore.user.is_admin ? (
+
+              <RouterLink to={globalStore.isAuth ? `/users/${globalStore.user.id}/basket` : "/login"} color="inherit">
             <IconButton
               size="large"
               aria-label="show count new books"
               color="inherit"
-            >
+              >
               <Badge badgeContent={globalStore.countBasket} color="error">
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>
             </RouterLink>
+              ) : (undefined)}
             
             {globalStore.isAuth ? (
-              <RouterLink to={`/users/${globalStore.user.id}`} color="inherit">
+              <RouterLink to={`/users/${globalStore.user.id}/personal`} color="inherit">
               <Link sx={{display: "flex", alignItems: "center"}}  color="inherit">
                 <Avatar alt="Remy Sharp" src={`http://localhost:5000/images/${globalStore.user.avatar}`}>
                   <PersonIcon/>

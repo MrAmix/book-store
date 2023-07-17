@@ -27,7 +27,7 @@ const upload = multer({
 router.get(`/`, bookController.getAll);
 router.get(`/:id`, bookController.getOne);
 router.delete(`/:id`, bookController.delete);
-router.put(`/:id`, bookController.update);
+router.put(`/:id`, upload.single("preview"), bookController.update);
 router.post(`/`, upload.single("preview"), bookController.create);
 router.post(`/:id/reviews`, bookController.createReview);
 

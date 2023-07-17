@@ -10,6 +10,7 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../App";
 import { useForm } from "react-hook-form";
+import { Card } from "@mui/material";
 
 function Login() {
   const {
@@ -49,8 +50,8 @@ function Login() {
   let errorA = false;
 
   return (
-    <Container component="main" maxWidth="sm">
-      <Box
+    <Container component='main' maxWidth='sm'>
+      <Card
         sx={{
           boxShadow: 3,
           borderRadius: 2,
@@ -62,57 +63,57 @@ function Login() {
           alignItems: "center",
         }}
       >
-        <Typography component="h1" variant="h5">
+        <Typography component='h1' variant='h5'>
           Авторизация
         </Typography>
         <Box
-          component="form"
+          component='form'
           onSubmit={handleSubmit(onSubmit)}
           noValidate
           sx={{ mt: 1 }}
         >
           <TextField
             {...register("LoginName", { required: true, maxLength: 80 })}
-            margin="normal"
+            margin='normal'
             required
             fullWidth
-            id="LoginName"
+            id='LoginName'
             error={errors?.LoginName?.type ? true : false}
             helperText={catchErrorLogin(errors?.LoginName?.type)}
-            label="Login"
-            name="LoginName"
+            label='Login'
+            name='LoginName'
           />
 
           <TextField
             {...register("password", { required: true, maxLength: 80 })}
             error={errors?.password?.type ? true : false}
             helperText={catchErrorPassword(errors?.password?.type)}
-            margin="normal"
+            margin='normal'
             required
             fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
+            name='password'
+            label='Password'
+            type='password'
+            id='password'
+            autoComplete='current-password'
           />
           <Button
-            type="submit"
+            type='submit'
             fullWidth
-            variant="contained"
+            variant='contained'
             sx={{ mt: 3, mb: 2 }}
           >
             Войти
           </Button>
           <Grid container>
             <Grid item>
-              <Link href="registration" variant="body2">
+              <Link href='registration' variant='body2'>
                 {"Еще не зарегистрированы?"}
               </Link>
             </Grid>
           </Grid>
         </Box>
-      </Box>
+      </Card>
     </Container>
   );
 }

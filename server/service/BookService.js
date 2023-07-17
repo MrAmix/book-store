@@ -54,19 +54,23 @@ class bookService {
     return deleteBook;
   }
 
-  async update(bookUpdateDto) {
+  async update(bookId, fileName, reqBody) {
+    console.log("QA");
+    console.log(bookId);
+    console.log(fileName);
+    console.log(reqBody);
+    console.log("QA");
     const data = {};
-    data.user_id = bookUpdateDto.user_id;
-    data.description = bookUpdateDto.description;
-    data.count = bookUpdateDto.count;
-    data.preview = bookUpdateDto.preview;
-    data.name = bookUpdateDto.name;
-    data.pageCount = bookUpdateDto.pageCount;
-    data.ageLimit = bookUpdateDto.ageLimit;
-    data.autor_id = bookUpdateDto.autor_id;
-    const updateBook = await knex("books")
-      .where("id", bookUpdateDto.id)
-      .update(data);
+    data.description = reqBody.description;
+    data.count = reqBody.count;
+    data.preview = fileName;
+    data.name = reqBody.name;
+    data.page_count = reqBody.pageCount;
+    data.age_limit = reqBody.ageLimit;
+    data.author_id = reqBody.author_id;
+    console.log(data);
+
+    const updateBook = await knex("books").where("id", bookId).update(data);
     return updateBook;
   }
 
@@ -79,7 +83,7 @@ class bookService {
       book.preview = bookCreateDto.preview;
       book.name = bookCreateDto.name;
       book.page_count = bookCreateDto.pageCount;
-      book.age_limit = bookCreateDto.ageLimit;
+      book.age_limit = bookCreateDto.age_limit;
       book.author_id = bookCreateDto.author_id;
 
       const newBook = (await trx("books").insert(book).returning("*"))[0];

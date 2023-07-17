@@ -15,8 +15,11 @@ import axios from "axios";
 import ImageListItem from "@mui/material/ImageListItem";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import { useParams } from "react-router-dom";
 
 export default function MultiActionAreaCard() {
+  const params = useParams();
+  console.log(params.id);
   const { globalStore, setGlobalStore } = React.useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const {
@@ -28,31 +31,83 @@ export default function MultiActionAreaCard() {
   const [image, setImage] = useState(null);
   const [authors, setAuthors] = useState([]);
   const [author, setAuthor] = useState([]);
-  useEffect(() => {
-    // declare the async data fetching function
-    const fetchData = async () => {
-      if (loading) {
-        const response = await fetch("http://localhost:5000/api/authors", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        if (response.ok) {
-          // convert the data to json
-          const json = await response.json();
+  const [currentBook, setCurrentBook] = useState(null);
+  console.log(errors);
+  const getAuthors = async () => {
+    const response = await fetch("http://localhost:5000/api/authors", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.ok) {
+      // convert the data to json
+      const json = await response.json();
 
-          // set state with the result
-          setAuthors(json);
-          return;
-        }
+      // set state with the result
+      setAuthors(json);
+      return;
+    }
+  };
+
+  const getInfoBookByParamId = async (paramsId) => {
+    const book = await axios
+      .get(`http://localhost:5000/api/books/${paramsId}`)
+      .then((res) => res.data);
+
+    setCurrentBook(book);
+  };
+
+  const createBook = async () => {
+    const res = await fetch(
+      `http://localhost:5000/api/books/${params.id}/bookUpdate`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          bookId: globalStore.book.id,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
-    };
+    );
+    console.log(createBook);
+  };
 
-    fetchData()
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, [loading, authors]);
+  //   useEffect(() => {
+  //     // declare the async data fetching function
+  //     const fetchData = async () => {
+  //       if (loading) {
+  //         const response = await fetch("http://localhost:5000/api/authors", {
+  //           method: "PUT",
+  //           //   body: JSON.stringify({
+  //           //     author: globalStore.author.id,
+  //           //     bookIds: books.map((book) => book.id),
+  //           //   }),
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //           },
+  //         });
+  //         if (response.ok) {
+  //           // convert the data to json
+  //           const json = await response.json();
+
+  //           // set state with the result
+  //           setAuthors(json);
+  //           return;
+  //         }
+  //       }
+  //     };
+
+  //     fetchData()
+  //       .catch(console.error)
+  //       .finally(() => setLoading(false));
+  //   }, [loading, authors]);
+
+  useEffect(() => {
+    getAuthors();
+    getInfoBookByParamId(params.id);
+  }, []);
 
   const handleAuthorChange = (event) => {
     setAuthor(event.target.value);
@@ -77,26 +132,44 @@ export default function MultiActionAreaCard() {
 
   const onSubmit = async (data, event) => {
     event.preventDefault();
-
+    console.log(data);
     const formData = new FormData();
+    const { id: author_id } = authors.find(
+      (authorObject) => authorObject.name === data.author
+    );
+    console.log(author_id);
     formData.append("preview", data.preview[0]);
     formData.append("name", data.name);
     formData.append("description", data.description);
     formData.append("ageLimit", data.ageLimit);
     formData.append("count", data.count);
-    formData.append("pageCount", data.pageCount);
-    formData.append("price", data.price);
-    formData.append("author_id", data.author);
-    formData.append("currency", "RUB");
-
+    formData.append("pageCount", Number(data.pageCount));
+    formData.append("price", data.price.price);
+    formData.append("author_id", author_id);
     await axios
-      .post(`http://localhost:5000/api/books/`, formData)
+      .put(`http://localhost:5000/api/books/${params.id}`, formData)
       .then((res) => {
+        console.log("wer");
         window.location.reload();
       });
     console.log(data);
   };
+  console.log(authors);
+  const changeBookByField = (event, field) => {
+    const value = event.target.value;
+    if (field === "price") {
+      setCurrentBook((prev) => ({
+        ...prev,
+        [field]: { price: value, currency: prev.price.currency },
+      }));
+      return;
+    }
+    console.log("CLICK");
+    console.log(value, field);
+    setCurrentBook((prev) => ({ ...prev, [field]: value }));
+  };
 
+  console.log(currentBook);
   return (
     <Box sx={{ display: "flex" }}>
       <AdminSidebar />
@@ -110,7 +183,7 @@ export default function MultiActionAreaCard() {
                 align='center'
                 component='div'
               >
-                {"Создание книги"}
+                {"Изменить книгу"}
               </Typography>
               <ImageListItem
                 sx={{
@@ -129,7 +202,7 @@ export default function MultiActionAreaCard() {
               </ImageListItem>
               <FormControl>
                 <Input
-                  {...register("preview")}
+                  {...register("preview", { required: true })}
                   id='file-input'
                   type='file'
                   onChange={handleAvatarChange}
@@ -140,6 +213,13 @@ export default function MultiActionAreaCard() {
                 />
               </FormControl>
               <TextField
+                {...register("name", {
+                  required: true,
+                  maxLength: 80,
+                  value: currentBook?.name,
+                })}
+                value={currentBook?.name}
+                onChange={(e) => changeBookByField(e, "name")}
                 size='small'
                 margin='normal'
                 required
@@ -147,11 +227,14 @@ export default function MultiActionAreaCard() {
                 id='name'
                 helperText='Введите название книги.'
                 name='name'
-                autoComplete='name'
-                {...register("name", { required: true, maxLength: 80 })}
-                autoFocus
               />
               <TextField
+                {...register("description", {
+                  required: true,
+                  value: currentBook?.description,
+                })}
+                value={currentBook?.description}
+                onChange={(e) => changeBookByField(e, "description")}
                 size='small'
                 margin='normal'
                 required
@@ -160,9 +243,15 @@ export default function MultiActionAreaCard() {
                 helperText='Введите описание книги.'
                 name='description'
                 autoComplete='description'
-                {...register("description", { required: true, maxLength: 80 })}
               />
               <TextField
+                {...register("price", {
+                  required: true,
+                  maxLength: 80,
+                  value: currentBook?.price,
+                })}
+                value={currentBook?.price?.price}
+                onChange={(e) => changeBookByField(e, "price")}
                 size='small'
                 margin='normal'
                 required
@@ -171,9 +260,15 @@ export default function MultiActionAreaCard() {
                 name='price'
                 type='price'
                 id='price'
-                {...register("price", { required: true, maxLength: 80 })}
               />
               <TextField
+                {...register("ageLimit", {
+                  required: true,
+                  maxLength: 80,
+                  value: currentBook?.ageLimit,
+                })}
+                value={currentBook?.ageLimit}
+                onChange={(e) => changeBookByField(e, "ageLimit")}
                 size='small'
                 margin='normal'
                 required
@@ -182,9 +277,15 @@ export default function MultiActionAreaCard() {
                 name='ageLimit'
                 type='ageLimit'
                 id='ageLimit'
-                {...register("ageLimit", { required: true, maxLength: 80 })}
               />
               <TextField
+                {...register("pageCount", {
+                  required: true,
+                  maxLength: 80,
+                  value: currentBook?.pageCount,
+                })}
+                value={currentBook?.pageCount}
+                onChange={(e) => changeBookByField(e, "pageCount")}
                 size='small'
                 margin='normal'
                 required
@@ -193,24 +294,31 @@ export default function MultiActionAreaCard() {
                 name='count'
                 type='count'
                 id='count'
-                {...register("pageCount", { required: true, maxLength: 80 })}
               />
               <TextField
+                {...register("count", {
+                  required: true,
+                  maxLength: 80,
+                  value: currentBook?.count,
+                })}
+                value={currentBook?.count}
+                onChange={(e) => changeBookByField(e, "count")}
                 size='small'
                 margin='normal'
                 required
                 fullWidth
-                helperText='Введите количество книг.'
+                helperText='Введите Количество экземпляров'
                 name='count'
                 type='count'
                 id='count'
-                {...register("count", { required: true, maxLength: 80 })}
               />
               <Select
-                {...register("author", { required: true })}
+                {...register("author", {
+                  value: currentBook?.author,
+                })}
+                value={currentBook?.author}
                 labelId='demo-simple-select-label'
                 id='demo-simple-select'
-                value={author}
                 label='Выберите автора'
                 onChange={handleAuthorChange}
               >

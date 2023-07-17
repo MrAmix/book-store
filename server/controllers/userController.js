@@ -80,8 +80,6 @@ class UserController {
     res.json(basketService.addBook(bookId, basketId));
   }
 
-  async createReview(req, res) {}
-
   async getReviews(req, res) {
     const userReviews = await reviewService.getUserReviews(req.params.id);
     res.json(userReviews);

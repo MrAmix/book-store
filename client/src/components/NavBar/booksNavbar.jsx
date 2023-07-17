@@ -10,22 +10,21 @@ import Badge from "@mui/material/Badge";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import MoreIcon from "@mui/icons-material/MoreVert";
-import Link from '@mui/material/Link';
-import List from '@mui/material/List';
+import Link from "@mui/material/Link";
+import List from "@mui/material/List";
 import { Link as RouterLink } from "react-router-dom";
 
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import { AuthContext } from "../../App";
-import PersonIcon from '@mui/icons-material/Person';
-import Avatar from '@mui/material/Avatar';
-import { observer } from 'mobx-react-lite'
-
+import PersonIcon from "@mui/icons-material/Person";
+import Avatar from "@mui/material/Avatar";
+import { observer } from "mobx-react-lite";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -67,7 +66,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
- function BooksNavbar() {
+function BooksNavbar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const { globalStore } = React.useContext(AuthContext);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -132,131 +131,156 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
       onClose={handleMobileMenuClose}
     >
       <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="show 17 new books"
-          color="inherit"
-        >
-          <Badge badgeContent={globalStore.countBasket} color="error" >
+        <IconButton size='large' aria-label='show 17 new books' color='inherit'>
+          <Badge badgeContent={globalStore.countBasket} color='error'>
             <ShoppingCartIcon />
           </Badge>
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
-      <RouterLink to={globalStore.isAuth ? `/user/${globalStore.user.id}/basket` : "/login"} color="inherit">
-
-      <Link
-              //href="/user/:id/basket" color="inherit"
-            >
-              Button Link
-            </Link>
-            </RouterLink>
+        <RouterLink
+          to={
+            globalStore.isAuth
+              ? `/user/${globalStore.user.id}/basket`
+              : "/login"
+          }
+          color='inherit'
+        >
+          <Link
+          //href="/user/:id/basket" color="inherit"
+          >
+            Button Link
+          </Link>
+        </RouterLink>
       </MenuItem>
     </Menu>
   );
 
-  
+  const StyledBox = styled(Box)(({ theme }) => ({
+    flexGrow: 1,
+    "& a": {
+      color: "white",
+    },
+  }));
+
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      
-      <AppBar position="fixed" sx={{zIndex: (theme) => theme.zIndex.drawer + 1}}>
+    <StyledBox>
+      <AppBar
+        position='fixed'
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      >
         <Toolbar>
-      <RouterLink to="/books" color="inherit">
-
-        <List sx={{display: "flex", alignItems: "center",flexDirection:"column"}}
+          <RouterLink to='/books' color='inherit'>
+            <List
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "column",
+              }}
             >
-              {[{title:"Книжка для братишки",icon:AutoStoriesIcon}].map((el) => (
-
-              <ListItem key={el.title} disablePadding color="inherit">
-                <ListItemButton >
-
-                  <ListItemIcon>
-                    { <el.icon /> }
-                  </ListItemIcon>
-                  <ListItemText primary={el.title} />
-                </ListItemButton>
-              </ListItem>
-            ))}
+              {[{ title: "Книжка для братишки", icon: AutoStoriesIcon }].map(
+                (el) => (
+                  <ListItem key={el.title} disablePadding color='inherit'>
+                    <ListItemButton>
+                      <ListItemIcon>{<el.icon />}</ListItemIcon>
+                      <ListItemText primary={el.title} />
+                    </ListItemButton>
+                  </ListItem>
+                )
+              )}
             </List>
-            </RouterLink>
+          </RouterLink>
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
-              placeholder="Найти книгу…"
+              placeholder='Найти книгу…'
               inputProps={{ "aria-label": "search" }}
             />
-            
           </Search>
-          <RouterLink to={"/chat"} color="inherit">
-            
-          <Link sx={{display: "flex", alignItems: "center"}}
-             color="inherit"
+          <RouterLink to={"/chat"} color='inherit'>
+            <Link
+              sx={{ display: "flex", alignItems: "center" }}
+              color='inherit'
             >
-
               Онлайн чат
             </Link>
-            </RouterLink>
+          </RouterLink>
           {globalStore.user.is_admin ? (
-            <RouterLink to={"/bookCreate"} color="inherit">
-              <Link 
+            <RouterLink to={"/bookCreate"} color='inherit'>
+              <Link
                 sx={{
-                  display: "flex", 
+                  display: "flex",
                   alignItems: "center",
-                  marginLeft:"10px"
+                  marginLeft: "10px",
                 }}
-                color="inherit"
+                color='inherit'
               >
                 Создать книгу
-               </Link>
-            </RouterLink>) : (
-              undefined
-            )
-          } 
-           
+              </Link>
+            </RouterLink>
+          ) : undefined}
 
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: "none", md: "flex",  } }}>
+          <Box sx={{ display: { xs: "none", md: "flex" } }}>
             {!globalStore.user.is_admin ? (
-
-              <RouterLink to={globalStore.isAuth ? `/users/${globalStore.user.id}/basket` : "/login"} color="inherit">
-            <IconButton
-              size="large"
-              aria-label="show count new books"
-              color="inherit"
+              <RouterLink
+                to={
+                  globalStore.isAuth
+                    ? `/users/${globalStore.user.id}/basket`
+                    : "/login"
+                }
+                color='inherit'
               >
-              <Badge badgeContent={globalStore.countBasket} color="error">
-                <ShoppingCartIcon />
-              </Badge>
-            </IconButton>
-            </RouterLink>
-              ) : (undefined)}
-            
-            {globalStore.isAuth ? (
-              <RouterLink to={`/users/${globalStore.user.id}/personal`} color="inherit">
-              <Link sx={{display: "flex", alignItems: "center"}}  color="inherit">
-                <Avatar alt="Remy Sharp" src={`http://localhost:5000/images/${globalStore.user.avatar}`}>
-                  <PersonIcon/>
-                </Avatar>
-              </Link>
+                <IconButton
+                  size='large'
+                  aria-label='show count new books'
+                  color='inherit'
+                >
+                  <Badge badgeContent={globalStore.countBasket} color='error'>
+                    <ShoppingCartIcon />
+                  </Badge>
+                </IconButton>
               </RouterLink>
-              ) : (
-                <Link sx={{display: "flex", alignItems: "center"}} href="/login" color="inherit">
-                  Войти
+            ) : undefined}
+
+            {globalStore.isAuth ? (
+              <RouterLink
+                to={`/users/${globalStore.user.id}/personal`}
+                color='inherit'
+              >
+                <Link
+                  sx={{ display: "flex", alignItems: "center" }}
+                  color='inherit'
+                >
+                  <Avatar
+                    alt='Remy Sharp'
+                    src={`http://localhost:5000/images/${globalStore.user.avatar}`}
+                  >
+                    <PersonIcon />
+                  </Avatar>
                 </Link>
-              )
-            }
+              </RouterLink>
+            ) : (
+              <Link
+                sx={{ display: "flex", alignItems: "center" }}
+                href='/login'
+                color='inherit'
+              >
+                Войти
+              </Link>
+            )}
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
             <IconButton
-              size="large"
-              aria-label="show more"
+              size='large'
+              aria-label='show more'
               aria-controls={mobileMenuId}
-              aria-haspopup="true"
+              aria-haspopup='true'
               onClick={handleMobileMenuOpen}
-              color="inherit"
+              color='inherit'
             >
               <MoreIcon />
             </IconButton>
@@ -265,10 +289,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
-    </Box>
+    </StyledBox>
   );
-  
-
 }
 
-export default observer(BooksNavbar)
+export default observer(BooksNavbar);

@@ -5,6 +5,7 @@ const bookDeleteDto = require("../dtos/BookDeleteDto");
 const bookGetOneDto = require("../dtos/BookGetOneDto");
 const reviewCreateDto = require("../dtos/reviewCreateDto");
 const bookService = require("../service/BookService");
+const reviewService = require("../service/reviewService");
 
 class bookController {
   async getAll(req, res) {
@@ -27,17 +28,12 @@ class bookController {
   }
 
   async update(req, res) {
+    console.log(req.params);
+    console.log(req.body);
     const updateBook = bookService.update(
-      new bookUpdateDto(
-        req.params.id,
-        req.body.description,
-        req.body.count,
-        req.body.preview,
-        req.body.name,
-        req.body.pageCount,
-        req.body.ageLimit,
-        req.body.author_id
-      )
+      req.params.id,
+      req.file.filename,
+      req.body
     );
     res.json(updateBook);
   }
@@ -59,9 +55,11 @@ class bookController {
 
     res.json(newBook);
   }
+
   async createReview(req, res) {
-    const newReview = await bookService.create(
-      new reviewCreateDto(req.body.text, req.params.id, req.body.user_id)
+    console.log(req.body);
+    const newReview = await reviewService.create(
+      new reviewCreateDto(req.body.review, req.params.id, req.body.user_id)
     );
     res.json(newReview);
   }
